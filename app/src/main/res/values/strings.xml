@@ -1,3 +1,7 @@
 <resources>
     <string name="app_name">NoteMark</string>
+    <string name="capture_your_thoughts_and_ideas">Capture your thoughts and ideas.</string>
+    <string name="your_own_collection_of_notes">Your Own Collection of Notes</string>
+    <string name="log_in">Log In</string>
+    <string name="get_started">Get Started</string>
 </resources>
