@@ -22,16 +22,18 @@ import com.jvrcoding.notemark.ui.theme.NoteMarkTheme
 
 @Composable
 fun NMTextField(
+    modifier: Modifier = Modifier,
     label: String,
     placeholder: String,
     value: String,
+    supportingText: String? = null,
     onValueChange: (String) -> Unit,
-    isError: Boolean,
-    keyboardType: KeyboardType = KeyboardType.Text
+    isError: Boolean = false,
+    keyboardType: KeyboardType = KeyboardType.Text,
 ) {
 
     Column(
-        modifier = Modifier.padding(16.dp)
+        modifier = modifier
     ) {
         Text(
             text = label,
@@ -52,10 +54,12 @@ fun NMTextField(
                 )
             },
             supportingText = {
-                Text(
-                    text = "Supporting text",
-                    style = MaterialTheme.typography.bodySmall
-                )
+                if(!supportingText.isNullOrBlank()) {
+                    Text(
+                        text = "Supporting text",
+                        style = MaterialTheme.typography.bodySmall
+                    )
+                }
             },
             keyboardOptions = KeyboardOptions(
                 keyboardType = keyboardType
