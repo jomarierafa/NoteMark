@@ -1,4 +1,4 @@
-package com.jvrcoding.notemark.auth.presentation.registration.components
+package com.jvrcoding.notemark.auth.presentation.register.components
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
@@ -19,7 +19,7 @@ import com.jvrcoding.notemark.core.presentation.NMTextField
 import com.jvrcoding.notemark.ui.theme.NoteMarkTheme
 
 @Composable
-fun RegistrationFieldSection(modifier: Modifier = Modifier) {
+fun RegisterFieldSection(modifier: Modifier = Modifier) {
 
     Column(modifier = modifier) {
 
@@ -76,9 +76,9 @@ fun RegistrationFieldSection(modifier: Modifier = Modifier) {
 
 @Preview
 @Composable
-private fun RegistrationFieldSectionPreview() {
+private fun RegisterFieldSectionPreview() {
     NoteMarkTheme {
-        RegistrationFieldSection(
+        RegisterFieldSection(
             modifier = Modifier.background(Color.White)
         )
     }
