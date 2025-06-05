@@ -1,4 +1,4 @@
-package com.jvrcoding.notemark.auth.presentation.login
+package com.jvrcoding.notemark.auth.presentation.registration
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
@@ -18,13 +18,13 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.jvrcoding.notemark.R
-import com.jvrcoding.notemark.auth.presentation.login.components.LoginFieldSection
+import com.jvrcoding.notemark.auth.presentation.registration.components.RegistrationFieldSection
 import com.jvrcoding.notemark.core.presentation.NMHeader
 import com.jvrcoding.notemark.ui.theme.ExtraLargeTitle
 import com.jvrcoding.notemark.ui.theme.NoteMarkTheme
 
 @Composable
-fun LoginTabletScreen(modifier: Modifier = Modifier) {
+fun RegistrationTabletScreen(modifier: Modifier = Modifier) {
     Column(
         modifier = modifier
             .fillMaxSize()
@@ -41,13 +41,13 @@ fun LoginTabletScreen(modifier: Modifier = Modifier) {
             )
     ) {
         NMHeader(
-            headerText = stringResource(R.string.log_in),
+            headerText = stringResource(R.string.create_account),
             modifier = modifier.fillMaxWidth(),
             horizontalAlignment = Alignment.CenterHorizontally,
             headerTextStyle = ExtraLargeTitle
         )
         Spacer(modifier = Modifier.height(32.dp))
-        LoginFieldSection()
+        RegistrationFieldSection()
     }
 }
 
@@ -58,12 +58,10 @@ fun LoginTabletScreen(modifier: Modifier = Modifier) {
     heightDp = 1280,
 )
 @Composable
-private fun LoginTabletScreenPreview() {
+private fun RegistrationTabletScreenPreview() {
     NoteMarkTheme {
         Scaffold { padding ->
-            LoginTabletScreen(
-                modifier = Modifier.padding(top = padding.calculateTopPadding())
-            )
+            RegistrationTabletScreen(modifier = Modifier.padding(top = padding.calculateTopPadding()) )
         }
     }
 }
