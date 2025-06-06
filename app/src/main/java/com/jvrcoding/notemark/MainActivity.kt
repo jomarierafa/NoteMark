@@ -7,12 +7,9 @@ import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
-import com.jvrcoding.notemark.auth.presentation.landing.LandingPhoneLandscapeScreen
+import com.jvrcoding.notemark.core.navigation.RootNavigation
 import com.jvrcoding.notemark.ui.theme.NoteMarkTheme
 
 class MainActivity : ComponentActivity() {
@@ -22,9 +19,11 @@ class MainActivity : ComponentActivity() {
         installSplashScreen()
         enableEdgeToEdge()
         setContent {
-            NoteMarkTheme {
+            NoteMarkTheme(dynamicColor = false) {
                 Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-                    LandingPhoneLandscapeScreen()
+                    RootNavigation(
+                        modifier =  Modifier.padding(top = innerPadding.calculateTopPadding())
+                    )
                 }
             }
         }

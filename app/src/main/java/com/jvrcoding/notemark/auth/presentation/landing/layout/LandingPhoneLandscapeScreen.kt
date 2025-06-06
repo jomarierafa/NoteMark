@@ -1,4 +1,4 @@
-package com.jvrcoding.notemark.auth.presentation.landing
+package com.jvrcoding.notemark.auth.presentation.landing.layout
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -24,9 +24,13 @@ import com.jvrcoding.notemark.ui.theme.NoteMarkTheme
 import com.jvrcoding.notemark.ui.theme.SoftBlue
 
 @Composable
-fun LandingPhoneLandscapeScreen() {
+fun LandingPhoneLandscapeScreen(
+    modifier: Modifier = Modifier,
+    onGetStartedClick: () -> Unit,
+    onLoginClick: () -> Unit
+) {
     Row(
-        modifier = Modifier
+        modifier = modifier
             .fillMaxSize()
             .background(SoftBlue)
     ) {
@@ -47,7 +51,9 @@ fun LandingPhoneLandscapeScreen() {
                 .align(Alignment.CenterVertically)
                 .clip(RoundedCornerShape(topStart = 20.dp, bottomStart = 20.dp))
                 .background(MaterialTheme.colorScheme.surfaceContainerLowest)
-                .padding(40.dp)
+                .padding(40.dp),
+            onGetStartedClick = { onGetStartedClick() },
+            onLoginClick = { onLoginClick() }
         )
     }
 }
@@ -58,6 +64,6 @@ fun LandingPhoneLandscapeScreen() {
 @Composable
 private fun LandingPhoneLandscapeScreenPreview() {
     NoteMarkTheme {
-        LandingPhoneLandscapeScreen()
+//        LandingPhoneLandscapeScreen()
     }
 }

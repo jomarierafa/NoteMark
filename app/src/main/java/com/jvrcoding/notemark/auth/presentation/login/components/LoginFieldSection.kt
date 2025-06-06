@@ -23,7 +23,11 @@ import com.jvrcoding.notemark.core.presentation.NMTextField
 import com.jvrcoding.notemark.ui.theme.NoteMarkTheme
 
 @Composable
-fun LoginFieldSection(modifier: Modifier = Modifier) {
+fun LoginFieldSection(
+    modifier: Modifier = Modifier,
+    onLoginClick: () -> Unit,
+    onRegisterClick: () -> Unit
+) {
     var text by remember { mutableStateOf("") }
 
     Column(modifier = modifier) {
@@ -52,7 +56,7 @@ fun LoginFieldSection(modifier: Modifier = Modifier) {
             text = stringResource(R.string.log_in),
             isLoading = false,
             enabled = false,
-            onClick = {}
+            onClick = { onLoginClick() }
         )
 
         Spacer(modifier = Modifier.height(8.dp))
@@ -64,7 +68,7 @@ fun LoginFieldSection(modifier: Modifier = Modifier) {
                 containerColor = MaterialTheme.colorScheme.onPrimary,
                 contentColor = MaterialTheme.colorScheme.primary,
             ),
-            onClick = {}
+            onClick = { onRegisterClick() }
         )
 
     }
@@ -72,10 +76,12 @@ fun LoginFieldSection(modifier: Modifier = Modifier) {
 
 @Preview
 @Composable
-private fun LoginFieldSection() {
+private fun LoginFieldSectionPreview() {
     NoteMarkTheme {
         LoginFieldSection(
-            modifier = Modifier.background(Color.White)
+            modifier = Modifier.background(Color.White),
+            onLoginClick =  {},
+            onRegisterClick = {}
         )
     }
 }

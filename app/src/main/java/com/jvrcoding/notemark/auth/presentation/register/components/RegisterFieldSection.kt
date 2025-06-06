@@ -19,7 +19,11 @@ import com.jvrcoding.notemark.core.presentation.NMTextField
 import com.jvrcoding.notemark.ui.theme.NoteMarkTheme
 
 @Composable
-fun RegisterFieldSection(modifier: Modifier = Modifier) {
+fun RegisterFieldSection(
+    modifier: Modifier = Modifier,
+    onRegisterClick: () -> Unit,
+    onLoginClick: () -> Unit
+) {
 
     Column(modifier = modifier) {
 
@@ -58,7 +62,7 @@ fun RegisterFieldSection(modifier: Modifier = Modifier) {
             text = stringResource(R.string.create_account),
             isLoading = false,
             enabled = false,
-            onClick = {}
+            onClick = { onRegisterClick() }
         )
         Spacer(modifier = Modifier.height(8.dp))
         NMActionButton(
@@ -68,7 +72,7 @@ fun RegisterFieldSection(modifier: Modifier = Modifier) {
                 containerColor = MaterialTheme.colorScheme.onPrimary,
                 contentColor = MaterialTheme.colorScheme.primary,
             ),
-            onClick = {}
+            onClick = { onLoginClick() }
         )
 
     }
@@ -79,7 +83,9 @@ fun RegisterFieldSection(modifier: Modifier = Modifier) {
 private fun RegisterFieldSectionPreview() {
     NoteMarkTheme {
         RegisterFieldSection(
-            modifier = Modifier.background(Color.White)
+            modifier = Modifier.background(Color.White),
+            onRegisterClick = {},
+            onLoginClick = {}
         )
     }
 }

@@ -1,4 +1,4 @@
-package com.jvrcoding.notemark.auth.presentation.register
+package com.jvrcoding.notemark.auth.presentation.register.layout
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
@@ -24,7 +24,11 @@ import com.jvrcoding.notemark.ui.theme.ExtraLargeTitle
 import com.jvrcoding.notemark.ui.theme.NoteMarkTheme
 
 @Composable
-fun RegisterTabletScreen(modifier: Modifier = Modifier) {
+fun RegisterTabletScreen(
+    modifier: Modifier = Modifier,
+    onRegisterClick: () -> Unit,
+    onLoginClick: () -> Unit
+) {
     Column(
         modifier = modifier
             .fillMaxSize()
@@ -47,7 +51,10 @@ fun RegisterTabletScreen(modifier: Modifier = Modifier) {
             headerTextStyle = ExtraLargeTitle
         )
         Spacer(modifier = Modifier.height(32.dp))
-        RegisterFieldSection()
+        RegisterFieldSection(
+            onRegisterClick = { onRegisterClick() },
+            onLoginClick = { onLoginClick() }
+        )
     }
 }
 
@@ -61,7 +68,11 @@ fun RegisterTabletScreen(modifier: Modifier = Modifier) {
 private fun RegisterTabletScreenPreview() {
     NoteMarkTheme {
         Scaffold { padding ->
-            RegisterTabletScreen(modifier = Modifier.padding(top = padding.calculateTopPadding()) )
+            RegisterTabletScreen(
+                modifier = Modifier.padding(top = padding.calculateTopPadding()),
+                onRegisterClick = {},
+                onLoginClick = {}
+            )
         }
     }
 }

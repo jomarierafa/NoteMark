@@ -20,7 +20,9 @@ import com.jvrcoding.notemark.core.presentation.NMActionButton
 fun LandingMenu(
     modifier: Modifier = Modifier,
     horizontalAlignment: Alignment.Horizontal = Alignment.Start,
-    headerTextStyle:  TextStyle = MaterialTheme.typography.titleLarge
+    headerTextStyle:  TextStyle = MaterialTheme.typography.titleLarge,
+    onGetStartedClick: () -> Unit,
+    onLoginClick: () -> Unit
 ) {
     Column(
         modifier = modifier,
@@ -49,7 +51,7 @@ fun LandingMenu(
                 containerColor = MaterialTheme.colorScheme.primary,
                 contentColor = MaterialTheme.colorScheme.onPrimary,
             ),
-            onClick = {},
+            onClick = { onGetStartedClick() },
         )
 
         Spacer(modifier = Modifier.height(8.dp))
@@ -62,7 +64,7 @@ fun LandingMenu(
                 contentColor = MaterialTheme.colorScheme.primary,
             ),
             border = BorderStroke(1.dp, MaterialTheme.colorScheme.primary),
-            onClick = {}
+            onClick = { onLoginClick() }
         )
 
     }
