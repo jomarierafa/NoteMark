@@ -19,6 +19,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -34,7 +35,10 @@ fun NMTextField(
     errorText: String = "",
     onValueChange: (String) -> Unit,
     isError: Boolean = false,
-    keyboardType: KeyboardType = KeyboardType.Text,
+    keyboardOptions: KeyboardOptions = KeyboardOptions(
+        keyboardType = KeyboardType.Text,
+        imeAction = ImeAction.Next
+    )
 ) {
 
     val interactionSource = remember { MutableInteractionSource() }
@@ -77,9 +81,8 @@ fun NMTextField(
                     )
                 }
             },
-            keyboardOptions = KeyboardOptions(
-                keyboardType = keyboardType
-            ),
+            keyboardOptions = keyboardOptions,
+            singleLine = true,
             modifier = Modifier
                 .fillMaxWidth(),
             textStyle = TextStyle(color = MaterialTheme.colorScheme.onSurface),

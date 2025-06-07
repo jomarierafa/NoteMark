@@ -20,7 +20,13 @@ android {
     }
 
     buildTypes {
+        debug {
+            buildConfigField("String", "BASE_URL", "\"https://notemark.pl-coding.com\"")
+        }
+
         release {
+            buildConfigField("String", "BASE_URL", "\"https://notemark.pl-coding.com\"")
+
             isMinifyEnabled = false
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
@@ -36,6 +42,7 @@ android {
         jvmTarget = "11"
     }
     buildFeatures {
+        buildConfig = true
         compose = true
     }
 }
@@ -62,7 +69,10 @@ dependencies {
     implementation(libs.androidx.core.splashscreen)
 
     implementation(libs.androidx.navigation.compose)
+    implementation(libs.androidx.security.crypto.ktx)
     implementation(libs.kotlinx.serialization.json)
+    implementation(libs.timber)
 
     implementation(libs.bundles.koin)
+    implementation(libs.bundles.ktor)
 }

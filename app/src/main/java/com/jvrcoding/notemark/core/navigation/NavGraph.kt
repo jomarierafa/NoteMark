@@ -3,13 +3,7 @@ package com.jvrcoding.notemark.core.navigation
 import kotlinx.serialization.Serializable
 
 @Serializable
-object Landing
+object AuthGraph
 
 @Serializable
-object Login
-
-@Serializable
-object Register
-
-@Serializable
-object Dashboard
+object HomeGraph

@@ -24,6 +24,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
@@ -42,6 +43,7 @@ fun NMPasswordTextField(
     supportingText: String = "",
     errorText: String = "",
     isError: Boolean = false,
+    imeAction: ImeAction = ImeAction.Next
 ) {
     var passwordVisible by remember { mutableStateOf(false) }
 
@@ -84,7 +86,10 @@ fun NMPasswordTextField(
                 }
 
             },
-            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
+            keyboardOptions = KeyboardOptions(
+                keyboardType = KeyboardType.Password,
+                imeAction = imeAction
+            ),
             visualTransformation = if (passwordVisible) VisualTransformation.None else PasswordVisualTransformation(),
             trailingIcon = {
                 val icon = if (passwordVisible) painterResource(R.drawable.ic_password_visible) else  painterResource(R.drawable.ic_password_not_visible)
@@ -103,7 +108,8 @@ fun NMPasswordTextField(
                 errorSupportingTextColor = MaterialTheme.colorScheme.error,
                 focusedContainerColor = Color.White,
                 errorContainerColor =  MaterialTheme.colorScheme.surface,
-                unfocusedContainerColor = MaterialTheme.colorScheme.surface
+                unfocusedContainerColor = MaterialTheme.colorScheme.surface,
+                errorTrailingIconColor = MaterialTheme.colorScheme.onSurfaceVariant
             )
         )
     }

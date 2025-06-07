@@ -16,6 +16,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.jvrcoding.notemark.R
+import com.jvrcoding.notemark.auth.presentation.login.LoginState
 import com.jvrcoding.notemark.auth.presentation.login.components.LoginFieldSection
 import com.jvrcoding.notemark.core.presentation.NMHeader
 import com.jvrcoding.notemark.ui.theme.NoteMarkTheme
@@ -23,6 +24,9 @@ import com.jvrcoding.notemark.ui.theme.NoteMarkTheme
 @Composable
 fun LoginPhoneLandscapeScreen(
     modifier: Modifier = Modifier,
+    state: LoginState,
+    onEmailChanged: (String) -> Unit,
+    onPasswordChanged: (String) -> Unit,
     onLoginClick: () -> Unit,
     onRegisterClick: () -> Unit
 ) {
@@ -50,6 +54,9 @@ fun LoginPhoneLandscapeScreen(
         LoginFieldSection(
             modifier = Modifier
                 .weight(1f),
+            state = state,
+            onEmailChanged = { onEmailChanged(it) },
+            onPasswordChanged = { onPasswordChanged(it) },
             onRegisterClick = { onRegisterClick() },
             onLoginClick = { onLoginClick() }
         )
@@ -66,6 +73,9 @@ private fun LoginPhoneLandscapeScreenPreview() {
             LoginPhoneLandscapeScreen(
                 modifier = Modifier
                     .padding(top = innerPadding.calculateTopPadding()),
+                state = LoginState(),
+                onEmailChanged = {},
+                onPasswordChanged = {},
                 onLoginClick = {},
                 onRegisterClick = {}
             )

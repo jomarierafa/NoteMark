@@ -1,12 +1,19 @@
 package com.jvrcoding.notemark.auth.presentation.register
 
+import android.util.Log
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshotFlow
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.jvrcoding.notemark.R
+import com.jvrcoding.notemark.auth.domain.AuthRepository
 import com.jvrcoding.notemark.auth.domain.UserDataValidator
+import com.jvrcoding.notemark.core.domain.util.DataError
+import com.jvrcoding.notemark.core.domain.util.Result
+import com.jvrcoding.notemark.core.presentation.util.UiText
+import com.jvrcoding.notemark.core.presentation.util.asUiText
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
@@ -14,7 +21,8 @@ import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
 
 class RegisterViewModel(
-    private val userDataValidator: UserDataValidator
+    private val userDataValidator: UserDataValidator,
+    private val repository: AuthRepository
 ): ViewModel() {
 
     var state by mutableStateOf(RegisterState())
@@ -53,8 +61,10 @@ class RegisterViewModel(
         snapshotFlow { state.password }
             .onEach { password ->
                 val passwordValidationState = userDataValidator.validatePassword(password)
+                val isPasswordMatch = userDataValidator.validateConfirmPassword(password, state.confirmPassword)
                 state = state.copy(
                     passwordValidationState = passwordValidationState,
+                    isConfirmPasswordValid = isPasswordMatch,
                     canRegister = state.isEmailValid && state.isUsernameValid
                             && passwordValidationState.isValidPassword
                             && state.isConfirmPasswordValid
@@ -70,7 +80,7 @@ class RegisterViewModel(
                     isConfirmPasswordValid = isPasswordMatch,
                     canRegister = state.isEmailValid && state.isUsernameValid
                             && state.passwordValidationState.isValidPassword
-                            && state.isConfirmPasswordValid
+                            && isPasswordMatch
                             && !state.isRegistering
                 )
             }
@@ -92,6 +102,27 @@ class RegisterViewModel(
     private fun register() {
         viewModelScope.launch {
             state = state.copy(isRegistering = true)
+            val result = repository.register(
+                username = state.username.trim(),
+                email = state.email.trim(),
+                password = state.password
+            )
+            state = state.copy(isRegistering = false)
+
+            when(result) {
+                is Result.Error -> {
+                    if(result.error == DataError.Network.CONFLICT) {
+                        eventChannel.send(RegisterEvent.Error(
+                            UiText.StringResource(R.string.error_email_exists)
+                        ))
+                    } else {
+                        eventChannel.send(RegisterEvent.Error(result.error.asUiText()))
+                    }
+                }
+                is Result.Success -> {
+                    eventChannel.send(RegisterEvent.RegistrationSuccess)
+                }
+            }
         }
     }
 }
