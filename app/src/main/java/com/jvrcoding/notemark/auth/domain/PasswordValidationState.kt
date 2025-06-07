@@ -6,5 +6,5 @@ data class PasswordValidationState(
     val hasSymbol: Boolean = false,
 ) {
     val isValidPassword: Boolean
-        get() = hasMinLength && hasNumber && hasSymbol
+        get() = hasMinLength && (hasNumber || hasSymbol)
 }
