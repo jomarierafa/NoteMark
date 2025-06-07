@@ -50,6 +50,7 @@ fun NMPasswordTextField(
     val interactionSource = remember { MutableInteractionSource() }
     val isFocused by interactionSource.collectIsFocusedAsState()
 
+    val passwordVisualTransformation = remember { PasswordVisualTransformation(mask = '*') }
     Column(modifier = modifier) {
         Text(
             text = label,
@@ -90,7 +91,7 @@ fun NMPasswordTextField(
                 keyboardType = KeyboardType.Password,
                 imeAction = imeAction
             ),
-            visualTransformation = if (passwordVisible) VisualTransformation.None else PasswordVisualTransformation(),
+            visualTransformation = if (passwordVisible) VisualTransformation.None else passwordVisualTransformation,
             trailingIcon = {
                 val icon = if (passwordVisible) painterResource(R.drawable.ic_password_visible) else  painterResource(R.drawable.ic_password_not_visible)
                 IconButton(onClick = { passwordVisible = !passwordVisible }) {
