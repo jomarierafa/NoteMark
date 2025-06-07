@@ -13,6 +13,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.jvrcoding.notemark.R
+import com.jvrcoding.notemark.auth.presentation.register.RegisterState
 import com.jvrcoding.notemark.core.presentation.NMActionButton
 import com.jvrcoding.notemark.core.presentation.NMPasswordTextField
 import com.jvrcoding.notemark.core.presentation.NMTextField
@@ -20,7 +21,12 @@ import com.jvrcoding.notemark.ui.theme.NoteMarkTheme
 
 @Composable
 fun RegisterFieldSection(
+    state: RegisterState,
     modifier: Modifier = Modifier,
+    onUsernameChanged: (String) -> Unit,
+    onEmailChanged: (String) -> Unit,
+    onPasswordChanged: (String) -> Unit,
+    onConfirmPasswordChanged: (String) -> Unit,
     onRegisterClick: () -> Unit,
     onLoginClick: () -> Unit
 ) {
@@ -30,30 +36,37 @@ fun RegisterFieldSection(
         NMTextField(
             label = stringResource(R.string.username),
             placeholder = stringResource(R.string.john_doe),
-            value = "text",
-            onValueChange = {
-            }
+            value = state.username,
+            onValueChange = { onUsernameChanged(it) },
+            isError = state.shouldShowUsernameError,
+            supportingText = stringResource(R.string.use_between_3_and_20_characters_for_your_username),
+            errorText = stringResource(R.string.username_error_message)
+
         )
         NMTextField(
             label = stringResource(R.string.email),
             placeholder = stringResource(R.string.john_doe_example_com),
-            value = "",
-            onValueChange = {
-            }
+            value = state.email,
+            onValueChange =  { onEmailChanged(it) },
+            isError = state.shouldShowEmailError,
+            errorText = stringResource(R.string.invalid_email_provided)
         )
         NMPasswordTextField(
             label = stringResource(R.string.password),
             placeholder = stringResource(R.string.password),
-            value = "",
-            onValueChange = {
-            }
+            value = state.password,
+            onValueChange = { onPasswordChanged(it) },
+            isError = state.shouldShowPasswordError,
+            supportingText = stringResource(R.string.password_supporting_text),
+            errorText = stringResource(R.string.password_must_be)
         )
         NMPasswordTextField(
             label = stringResource(R.string.repeat_password),
             placeholder = stringResource(R.string.password),
-            value = "",
-            onValueChange = {
-            }
+            value = state.confirmPassword,
+            onValueChange = { onConfirmPasswordChanged(it) },
+            isError = state.shouldShowConfirmPasswordError,
+            errorText = stringResource(R.string.passwords_do_not_match)
         )
 
         Spacer(modifier = Modifier.height(12.dp))
@@ -61,7 +74,7 @@ fun RegisterFieldSection(
         NMActionButton(
             text = stringResource(R.string.create_account),
             isLoading = false,
-            enabled = false,
+            enabled = state.canRegister,
             onClick = { onRegisterClick() }
         )
         Spacer(modifier = Modifier.height(8.dp))
@@ -83,9 +96,14 @@ fun RegisterFieldSection(
 private fun RegisterFieldSectionPreview() {
     NoteMarkTheme {
         RegisterFieldSection(
+            state = RegisterState(),
             modifier = Modifier.background(Color.White),
             onRegisterClick = {},
-            onLoginClick = {}
+            onLoginClick = {},
+            onUsernameChanged = {},
+            onEmailChanged = {},
+            onPasswordChanged = {},
+            onConfirmPasswordChanged = {},
         )
     }
 }

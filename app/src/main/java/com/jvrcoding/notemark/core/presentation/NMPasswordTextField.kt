@@ -1,9 +1,12 @@
 package com.jvrcoding.notemark.core.presentation
 
+import androidx.compose.foundation.interaction.MutableInteractionSource
+import androidx.compose.foundation.interaction.collectIsFocusedAsState
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Icon
@@ -36,10 +39,14 @@ fun NMPasswordTextField(
     placeholder: String,
     value: String,
     onValueChange: (String) -> Unit,
-    supportingText: String? = null,
+    supportingText: String = "",
+    errorText: String = "",
     isError: Boolean = false,
 ) {
     var passwordVisible by remember { mutableStateOf(false) }
+
+    val interactionSource = remember { MutableInteractionSource() }
+    val isFocused by interactionSource.collectIsFocusedAsState()
 
     Column(modifier = modifier) {
         Text(
@@ -53,6 +60,7 @@ fun NMPasswordTextField(
         OutlinedTextField(
             value = value,
             onValueChange = onValueChange,
+            interactionSource = interactionSource,
             placeholder = {
                 Text(
                     text = placeholder,
@@ -61,12 +69,20 @@ fun NMPasswordTextField(
                 )
             },
             supportingText = {
-                if (!supportingText.isNullOrBlank()) {
+                if(errorText.isNotEmpty() && (!isFocused && isError)) {
+                    Text(
+                        text = errorText,
+                        style = MaterialTheme.typography.bodySmall,
+                        modifier = Modifier.padding(bottom = 7.dp)
+                    )
+                } else if(supportingText.isNotEmpty() && isFocused) {
                     Text(
                         text = supportingText,
-                        style = MaterialTheme.typography.bodySmall
+                        style = MaterialTheme.typography.bodySmall,
+                        modifier = Modifier.padding(bottom = 7.dp)
                     )
                 }
+
             },
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
             visualTransformation = if (passwordVisible) VisualTransformation.None else PasswordVisualTransformation(),
@@ -78,7 +94,7 @@ fun NMPasswordTextField(
             },
             modifier = Modifier.fillMaxWidth(),
             textStyle = TextStyle(color = MaterialTheme.colorScheme.onSurface),
-            isError = isError,
+            isError = !isFocused && isError,
             shape = RoundedCornerShape(12.dp),
             colors = OutlinedTextFieldDefaults.colors(
                 focusedBorderColor = MaterialTheme.colorScheme.primary,
@@ -86,7 +102,7 @@ fun NMPasswordTextField(
                 errorBorderColor = MaterialTheme.colorScheme.error,
                 errorSupportingTextColor = MaterialTheme.colorScheme.error,
                 focusedContainerColor = Color.White,
-                errorContainerColor = Color.White,
+                errorContainerColor =  MaterialTheme.colorScheme.surface,
                 unfocusedContainerColor = MaterialTheme.colorScheme.surface
             )
         )

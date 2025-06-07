@@ -1,5 +1,7 @@
 package com.jvrcoding.notemark.core.presentation
 
+import androidx.compose.foundation.interaction.MutableInteractionSource
+import androidx.compose.foundation.interaction.collectIsFocusedAsState
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -12,6 +14,8 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
@@ -26,11 +30,15 @@ fun NMTextField(
     label: String,
     placeholder: String,
     value: String,
-    supportingText: String? = null,
+    supportingText: String = "",
+    errorText: String = "",
     onValueChange: (String) -> Unit,
     isError: Boolean = false,
     keyboardType: KeyboardType = KeyboardType.Text,
 ) {
+
+    val interactionSource = remember { MutableInteractionSource() }
+    val isFocused by interactionSource.collectIsFocusedAsState()
 
     Column(
         modifier = modifier
@@ -46,6 +54,7 @@ fun NMTextField(
         OutlinedTextField(
             value = value,
             onValueChange = onValueChange,
+            interactionSource = interactionSource,
             placeholder = {
                 Text(
                     text = placeholder,
@@ -54,7 +63,13 @@ fun NMTextField(
                 )
             },
             supportingText = {
-                if(!supportingText.isNullOrBlank()) {
+                if(errorText.isNotEmpty() && (!isFocused && isError)) {
+                    Text(
+                        text = errorText,
+                        style = MaterialTheme.typography.bodySmall,
+                        modifier = Modifier.padding(bottom = 7.dp)
+                    )
+                } else if(supportingText.isNotEmpty() && isFocused) {
                     Text(
                         text = supportingText,
                         style = MaterialTheme.typography.bodySmall,
@@ -68,7 +83,7 @@ fun NMTextField(
             modifier = Modifier
                 .fillMaxWidth(),
             textStyle = TextStyle(color = MaterialTheme.colorScheme.onSurface),
-            isError = isError,
+            isError = !isFocused && isError,
             shape = RoundedCornerShape(12.dp),
             colors = OutlinedTextFieldDefaults.colors(
                 focusedBorderColor = MaterialTheme.colorScheme.primary,
@@ -76,7 +91,7 @@ fun NMTextField(
                 errorBorderColor = MaterialTheme.colorScheme.error,
                 errorSupportingTextColor =  MaterialTheme.colorScheme.error,
                 focusedContainerColor = Color.White,
-                errorContainerColor = Color.White,
+                errorContainerColor = MaterialTheme.colorScheme.surface,
                 unfocusedContainerColor = MaterialTheme.colorScheme.surface
             )
         )

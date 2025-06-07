@@ -18,6 +18,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.jvrcoding.notemark.R
+import com.jvrcoding.notemark.auth.presentation.register.RegisterState
 import com.jvrcoding.notemark.auth.presentation.register.components.RegisterFieldSection
 import com.jvrcoding.notemark.core.presentation.NMHeader
 import com.jvrcoding.notemark.ui.theme.NoteMarkTheme
@@ -26,7 +27,12 @@ import com.jvrcoding.notemark.ui.theme.NoteMarkTheme
 fun RegisterPhoneLandscapeScreen(
     modifier: Modifier = Modifier,
     onRegisterClick: () -> Unit,
-    onLoginClick: () -> Unit
+    onLoginClick: () -> Unit,
+    state: RegisterState,
+    onUsernameChanged: (String) -> Unit,
+    onEmailChanged: (String) -> Unit,
+    onPasswordChanged: (String) -> Unit,
+    onConfirmPasswordChanged: (String) -> Unit,
 ) {
     Row(
         modifier = modifier
@@ -55,6 +61,11 @@ fun RegisterPhoneLandscapeScreen(
                 .weight(1f)
                 .verticalScroll(rememberScrollState())
                 .padding(vertical = 32.dp),
+            state = state,
+            onUsernameChanged = { onUsernameChanged(it) },
+            onEmailChanged = { onEmailChanged(it) },
+            onPasswordChanged = { onPasswordChanged(it) },
+            onConfirmPasswordChanged = { onConfirmPasswordChanged(it) },
             onRegisterClick = { onRegisterClick() },
             onLoginClick = { onLoginClick() }
         )
@@ -69,8 +80,13 @@ private fun RegisterPhoneLandscapeScreenPreview() {
     NoteMarkTheme {
         Scaffold { innerPadding ->
             RegisterPhoneLandscapeScreen(
+                state = RegisterState(),
                 modifier = Modifier
                     .padding(top = innerPadding.calculateTopPadding()),
+                onUsernameChanged = {},
+                onEmailChanged = {},
+                onPasswordChanged = {},
+                onConfirmPasswordChanged = {},
                 onRegisterClick = {},
                 onLoginClick = {}
             )

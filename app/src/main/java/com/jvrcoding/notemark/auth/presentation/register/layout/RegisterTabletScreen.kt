@@ -18,6 +18,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.jvrcoding.notemark.R
+import com.jvrcoding.notemark.auth.presentation.register.RegisterState
 import com.jvrcoding.notemark.auth.presentation.register.components.RegisterFieldSection
 import com.jvrcoding.notemark.core.presentation.NMHeader
 import com.jvrcoding.notemark.ui.theme.ExtraLargeTitle
@@ -26,6 +27,11 @@ import com.jvrcoding.notemark.ui.theme.NoteMarkTheme
 @Composable
 fun RegisterTabletScreen(
     modifier: Modifier = Modifier,
+    state: RegisterState,
+    onUsernameChanged: (String) -> Unit,
+    onEmailChanged: (String) -> Unit,
+    onPasswordChanged: (String) -> Unit,
+    onConfirmPasswordChanged: (String) -> Unit,
     onRegisterClick: () -> Unit,
     onLoginClick: () -> Unit
 ) {
@@ -52,6 +58,11 @@ fun RegisterTabletScreen(
         )
         Spacer(modifier = Modifier.height(32.dp))
         RegisterFieldSection(
+            state = state,
+            onUsernameChanged = { onUsernameChanged(it) },
+            onEmailChanged = { onEmailChanged(it) },
+            onPasswordChanged = { onPasswordChanged(it) },
+            onConfirmPasswordChanged = { onConfirmPasswordChanged(it) },
             onRegisterClick = { onRegisterClick() },
             onLoginClick = { onLoginClick() }
         )
@@ -69,7 +80,12 @@ private fun RegisterTabletScreenPreview() {
     NoteMarkTheme {
         Scaffold { padding ->
             RegisterTabletScreen(
+                state = RegisterState(),
                 modifier = Modifier.padding(top = padding.calculateTopPadding()),
+                onUsernameChanged = {},
+                onEmailChanged = {},
+                onPasswordChanged = {},
+                onConfirmPasswordChanged = {},
                 onRegisterClick = {},
                 onLoginClick = {}
             )

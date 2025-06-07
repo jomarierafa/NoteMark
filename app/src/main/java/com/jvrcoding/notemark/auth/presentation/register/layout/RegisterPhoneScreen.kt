@@ -17,6 +17,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.jvrcoding.notemark.R
+import com.jvrcoding.notemark.auth.presentation.register.RegisterState
 import com.jvrcoding.notemark.auth.presentation.register.components.RegisterFieldSection
 import com.jvrcoding.notemark.core.presentation.NMHeader
 import com.jvrcoding.notemark.ui.theme.NoteMarkTheme
@@ -24,6 +25,11 @@ import com.jvrcoding.notemark.ui.theme.NoteMarkTheme
 @Composable
 fun RegisterPhoneScreen(
     modifier: Modifier = Modifier,
+    state: RegisterState,
+    onUsernameChanged: (String) -> Unit,
+    onEmailChanged: (String) -> Unit,
+    onPasswordChanged: (String) -> Unit,
+    onConfirmPasswordChanged: (String) -> Unit,
     onRegisterClick: () -> Unit,
     onLoginClick: () -> Unit
 ) {
@@ -46,8 +52,13 @@ fun RegisterPhoneScreen(
         NMHeader(headerText = stringResource(R.string.create_account))
         Spacer(modifier = Modifier.height(24.dp))
         RegisterFieldSection(
+            state = state,
+            onUsernameChanged = { onUsernameChanged(it) },
+            onEmailChanged = { onEmailChanged(it) },
+            onPasswordChanged = { onPasswordChanged(it) },
+            onConfirmPasswordChanged = { onConfirmPasswordChanged(it) },
             onRegisterClick = { onRegisterClick() },
-            onLoginClick = { onLoginClick() }
+            onLoginClick = { onLoginClick() },
         )
     }
 }
@@ -57,8 +68,13 @@ fun RegisterPhoneScreen(
 private fun RegisterPhoneScreenPreview() {
     NoteMarkTheme {
         RegisterPhoneScreen(
+            state = RegisterState(),
             onRegisterClick = {},
-            onLoginClick = {}
+            onLoginClick = {},
+            onUsernameChanged = {},
+            onEmailChanged = {},
+            onPasswordChanged = {},
+            onConfirmPasswordChanged = {}
         )
     }
 }
