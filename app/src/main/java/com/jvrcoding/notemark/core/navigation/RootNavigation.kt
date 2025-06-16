@@ -11,6 +11,7 @@ import com.jvrcoding.notemark.auth.presentation.landing.LandingScreenRoot
 import com.jvrcoding.notemark.auth.presentation.login.LoginScreenRoot
 import com.jvrcoding.notemark.auth.presentation.register.RegisterScreenRoot
 import com.jvrcoding.notemark.dashboard.presentation.DashboardScreen
+import com.jvrcoding.notemark.note.presentation.notelist.NoteListScreenRoot
 
 @Composable
 fun NavigationRoot(
@@ -103,10 +104,12 @@ private fun NavGraphBuilder.homeGraph(
     navController: NavHostController
 ) {
     navigation<HomeGraph>(
-        startDestination = Dashboard
+        startDestination = NoteList
     ) {
-        composable<Dashboard> {
-            DashboardScreen()
+        composable<NoteList> {
+            NoteListScreenRoot(
+                onAddClick = {}
+            )
         }
     }
 }

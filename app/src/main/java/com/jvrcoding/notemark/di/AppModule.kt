@@ -15,6 +15,7 @@ import com.jvrcoding.notemark.auth.presentation.register.RegisterViewModel
 import com.jvrcoding.notemark.core.data.auth.EncryptedSessionStorage
 import com.jvrcoding.notemark.core.data.networking.HttpClientFactory
 import com.jvrcoding.notemark.core.domain.SessionStorage
+import com.jvrcoding.notemark.note.presentation.notelist.NoteListViewModel
 import kotlinx.coroutines.CoroutineScope
 import org.koin.android.ext.koin.androidApplication
 import org.koin.androidx.viewmodel.dsl.viewModelOf
@@ -54,4 +55,5 @@ val appModule = module {
     viewModelOf(::MainViewModel)
     viewModelOf(::RegisterViewModel)
     viewModelOf(::LoginViewModel)
+    viewModelOf(::NoteListViewModel)
 }

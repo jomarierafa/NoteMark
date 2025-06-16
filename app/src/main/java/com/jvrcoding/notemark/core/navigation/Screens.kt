@@ -12,4 +12,7 @@ object Login
 object Register
 
 @Serializable
+object NoteList
+
+@Serializable
 object Dashboard
