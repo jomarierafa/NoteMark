@@ -30,4 +30,5 @@
     <string name="error_unknown">An unknown error occured.</string>
     <string name="error_email_password_incorrect">The email or password is incorrect.</string>
     <string name="youre_logged_in">You\'re logged in.</string>
+    <string name="go_back">Go back</string>
 </resources>

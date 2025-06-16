@@ -1,4 +1,4 @@
-package com.jvrcoding.notemark.core.presentation
+package com.jvrcoding.notemark.core.presentation.components
 
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.interaction.collectIsFocusedAsState

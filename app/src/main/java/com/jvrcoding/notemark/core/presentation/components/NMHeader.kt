@@ -1,4 +1,4 @@
-package com.jvrcoding.notemark.core.presentation
+package com.jvrcoding.notemark.core.presentation.components
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.material3.MaterialTheme

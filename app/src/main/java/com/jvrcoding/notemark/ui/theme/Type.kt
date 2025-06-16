@@ -50,6 +50,13 @@ val ExtraLargeTitle = TextStyle(
     lineHeight = 40.sp
 )
 
+val ExtraSmallTitle = TextStyle(
+    fontFamily = SpaceGrotesk,
+    fontWeight = FontWeight.Bold,
+    fontSize = 16.sp,
+    lineHeight = 20.sp
+)
+
 // Set of Material typography styles to start with
 val Typography = Typography(
     titleLarge = TextStyle(
@@ -57,6 +64,12 @@ val Typography = Typography(
         fontWeight = FontWeight.Bold,
         fontSize = 32.sp,
         lineHeight = 36.sp
+    ),
+    titleMedium = TextStyle(
+        fontFamily = SpaceGrotesk,
+        fontWeight = FontWeight.Bold,
+        fontSize = 20.sp,
+        lineHeight = 24.sp
     ),
     titleSmall = TextStyle(
         fontFamily = SpaceGrotesk,

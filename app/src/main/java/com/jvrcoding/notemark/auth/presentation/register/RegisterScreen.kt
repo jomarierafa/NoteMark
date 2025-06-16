@@ -1,7 +1,11 @@
 package com.jvrcoding.notemark.auth.presentation.register
 
 import android.widget.Toast
-import androidx.compose.foundation.text.input.TextFieldState
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -9,6 +13,7 @@ import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import com.jvrcoding.notemark.R
 import com.jvrcoding.notemark.auth.presentation.register.layout.RegisterPhoneLandscapeScreen
 import com.jvrcoding.notemark.auth.presentation.register.layout.RegisterPhoneScreen
+import com.jvrcoding.notemark.auth.presentation.register.layout.RegisterTabletScreen
 import com.jvrcoding.notemark.core.presentation.util.DeviceLayoutType
 import com.jvrcoding.notemark.core.presentation.util.ObserveAsEvents
 import com.jvrcoding.notemark.core.presentation.util.rememberDeviceLayoutType
@@ -16,7 +21,6 @@ import org.koin.androidx.compose.koinViewModel
 
 @Composable
 fun RegisterScreenRoot(
-    modifier: Modifier,
     onLoginClick: () -> Unit,
     onSuccessfulRegistration: () -> Unit,
     viewModel: RegisterViewModel = koinViewModel()
@@ -47,7 +51,6 @@ fun RegisterScreenRoot(
     }
 
     RegisterScreen(
-        modifier = modifier,
         state = viewModel.state,
         onAction = { action ->
             when(action) {
@@ -61,45 +64,58 @@ fun RegisterScreenRoot(
 
 @Composable
 fun RegisterScreen(
-    modifier: Modifier,
     state: RegisterState,
     onAction: (RegisterAction) -> Unit
 ) {
-    val layoutType = rememberDeviceLayoutType()
 
-    when (layoutType) {
-        DeviceLayoutType.PORTRAIT ->
-            RegisterPhoneScreen(
-                modifier = modifier,
-                state = state,
-                onUsernameChanged = { onAction(RegisterAction.OnUsernameChanged(it)) },
-                onEmailChanged = { onAction(RegisterAction.OnEmailChanged(it)) },
-                onPasswordChanged = { onAction(RegisterAction.OnPasswordChanged(it)) },
-                onConfirmPasswordChanged = { onAction(RegisterAction.OnConfirmPasswordChanged(it)) },
-                onLoginClick = { onAction(RegisterAction.OnLoginClick) },
-                onRegisterClick = { onAction(RegisterAction.OnRegisterClick) }
-            )
-        DeviceLayoutType.LANDSCAPE ->
-            RegisterPhoneLandscapeScreen(
-                modifier = modifier,
-                state = state,
-                onUsernameChanged = { onAction(RegisterAction.OnUsernameChanged(it)) },
-                onEmailChanged = { onAction(RegisterAction.OnEmailChanged(it)) },
-                onPasswordChanged = { onAction(RegisterAction.OnPasswordChanged(it)) },
-                onConfirmPasswordChanged = { onAction(RegisterAction.OnConfirmPasswordChanged(it)) },
-                onLoginClick = { onAction(RegisterAction.OnLoginClick) },
-                onRegisterClick = { onAction(RegisterAction.OnRegisterClick) }
-            )
-        DeviceLayoutType.TABLET ->
-            RegisterPhoneLandscapeScreen(
-                modifier = modifier,
-                state = state,
-                onUsernameChanged = { onAction(RegisterAction.OnUsernameChanged(it)) },
-                onEmailChanged = { onAction(RegisterAction.OnEmailChanged(it)) },
-                onPasswordChanged = { onAction(RegisterAction.OnPasswordChanged(it)) },
-                onConfirmPasswordChanged = { onAction(RegisterAction.OnConfirmPasswordChanged(it)) },
-                onLoginClick = { onAction(RegisterAction.OnLoginClick) },
-                onRegisterClick = { onAction(RegisterAction.OnRegisterClick) }
-            )
+    Scaffold(
+        modifier = Modifier.fillMaxSize()
+      ) { innerPadding ->
+
+        val layoutType = rememberDeviceLayoutType()
+
+        when (layoutType) {
+            DeviceLayoutType.PORTRAIT ->
+                RegisterPhoneScreen(
+                    modifier = Modifier
+                        .background(MaterialTheme.colorScheme.primary)
+                        .padding(top = innerPadding.calculateTopPadding()),
+                    state = state,
+                    onUsernameChanged = { onAction(RegisterAction.OnUsernameChanged(it)) },
+                    onEmailChanged = { onAction(RegisterAction.OnEmailChanged(it)) },
+                    onPasswordChanged = { onAction(RegisterAction.OnPasswordChanged(it)) },
+                    onConfirmPasswordChanged = { onAction(RegisterAction.OnConfirmPasswordChanged(it)) },
+                    onLoginClick = { onAction(RegisterAction.OnLoginClick) },
+                    onRegisterClick = { onAction(RegisterAction.OnRegisterClick) }
+                )
+
+            DeviceLayoutType.LANDSCAPE ->
+                RegisterPhoneLandscapeScreen(
+                    modifier = Modifier
+                        .background(MaterialTheme.colorScheme.primary)
+                        .padding(top = innerPadding.calculateTopPadding()),
+                    state = state,
+                    onUsernameChanged = { onAction(RegisterAction.OnUsernameChanged(it)) },
+                    onEmailChanged = { onAction(RegisterAction.OnEmailChanged(it)) },
+                    onPasswordChanged = { onAction(RegisterAction.OnPasswordChanged(it)) },
+                    onConfirmPasswordChanged = { onAction(RegisterAction.OnConfirmPasswordChanged(it)) },
+                    onLoginClick = { onAction(RegisterAction.OnLoginClick) },
+                    onRegisterClick = { onAction(RegisterAction.OnRegisterClick) }
+                )
+
+            DeviceLayoutType.TABLET ->
+                RegisterTabletScreen(
+                    modifier = Modifier
+                        .background(MaterialTheme.colorScheme.primary)
+                        .padding(top = innerPadding.calculateTopPadding()),
+                    state = state,
+                    onUsernameChanged = { onAction(RegisterAction.OnUsernameChanged(it)) },
+                    onEmailChanged = { onAction(RegisterAction.OnEmailChanged(it)) },
+                    onPasswordChanged = { onAction(RegisterAction.OnPasswordChanged(it)) },
+                    onConfirmPasswordChanged = { onAction(RegisterAction.OnConfirmPasswordChanged(it)) },
+                    onLoginClick = { onAction(RegisterAction.OnLoginClick) },
+                    onRegisterClick = { onAction(RegisterAction.OnRegisterClick) }
+                )
+        }
     }
 }

@@ -1,4 +1,4 @@
-package com.jvrcoding.notemark.core.presentation
+package com.jvrcoding.notemark.core.presentation.components
 
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.interaction.collectIsFocusedAsState
@@ -22,7 +22,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
@@ -30,7 +29,8 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.jvrcoding.notemark.R
+import com.jvrcoding.notemark.ui.theme.EyeClosedIcon
+import com.jvrcoding.notemark.ui.theme.EyeOpenIcon
 import com.jvrcoding.notemark.ui.theme.NoteMarkTheme
 
 @Composable
@@ -93,9 +93,9 @@ fun NMPasswordTextField(
             ),
             visualTransformation = if (passwordVisible) VisualTransformation.None else passwordVisualTransformation,
             trailingIcon = {
-                val icon = if (passwordVisible) painterResource(R.drawable.ic_password_visible) else  painterResource(R.drawable.ic_password_not_visible)
+                val icon = if (passwordVisible) EyeClosedIcon else  EyeOpenIcon
                 IconButton(onClick = { passwordVisible = !passwordVisible }) {
-                    Icon(painter = icon, contentDescription = if (passwordVisible) "Hide password" else "Show password")
+                    Icon(imageVector = icon, contentDescription = if (passwordVisible) "Hide password" else "Show password")
                 }
             },
             modifier = Modifier.fillMaxWidth(),

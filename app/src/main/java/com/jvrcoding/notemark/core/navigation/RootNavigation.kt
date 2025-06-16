@@ -1,7 +1,6 @@
 package com.jvrcoding.notemark.core.navigation
 
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Modifier
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
@@ -15,7 +14,6 @@ import com.jvrcoding.notemark.dashboard.presentation.DashboardScreen
 
 @Composable
 fun NavigationRoot(
-    modifier: Modifier,
     navController: NavHostController,
     isLoggedIn: Boolean
 ) {
@@ -24,11 +22,9 @@ fun NavigationRoot(
         startDestination = if(isLoggedIn) HomeGraph else AuthGraph
     ) {
         authGraph(
-            modifier = modifier,
             navController = navController
         )
         homeGraph(
-            modifier = modifier,
             navController = navController
         )
     }
@@ -37,7 +33,6 @@ fun NavigationRoot(
 
 
 private fun NavGraphBuilder.authGraph(
-    modifier: Modifier,
     navController: NavHostController
 ) {
     navigation<AuthGraph>(
@@ -63,7 +58,6 @@ private fun NavGraphBuilder.authGraph(
         }
         composable<Login> {
             LoginScreenRoot(
-                modifier = modifier,
                 onLoginSuccess = {
                     navController.navigate(HomeGraph) {
                         popUpTo(AuthGraph) {
@@ -84,7 +78,6 @@ private fun NavGraphBuilder.authGraph(
         }
         composable<Register> {
             RegisterScreenRoot(
-                modifier = modifier,
                 onSuccessfulRegistration = {
                     navController.navigate(Login) {
                         popUpTo(Register) {
@@ -107,7 +100,6 @@ private fun NavGraphBuilder.authGraph(
 }
 
 private fun NavGraphBuilder.homeGraph(
-    modifier: Modifier,
     navController: NavHostController
 ) {
     navigation<HomeGraph>(
@@ -121,7 +113,6 @@ private fun NavGraphBuilder.homeGraph(
 
 @Composable
 fun RootNavigation(
-    modifier: Modifier = Modifier,
     navController: NavHostController = rememberNavController()
 ) {
     NavHost(
@@ -148,7 +139,6 @@ fun RootNavigation(
         }
         composable<Login> {
             LoginScreenRoot(
-                modifier = modifier,
                 onLoginSuccess = { },
                 onRegisterClick = {
                     navController.navigate(Register) {
@@ -163,7 +153,6 @@ fun RootNavigation(
         }
         composable<Register> {
             RegisterScreenRoot(
-                modifier = modifier,
                 onSuccessfulRegistration = {
                     navController.navigate(Login) {
                         popUpTo(Register) {

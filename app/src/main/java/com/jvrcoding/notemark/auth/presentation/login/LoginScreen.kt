@@ -1,6 +1,11 @@
 package com.jvrcoding.notemark.auth.presentation.login
 
 import android.widget.Toast
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -16,7 +21,6 @@ import org.koin.androidx.compose.koinViewModel
 
 @Composable
 fun LoginScreenRoot(
-    modifier: Modifier,
     onRegisterClick: () -> Unit,
     onLoginSuccess: () -> Unit,
     viewModel: LoginViewModel = koinViewModel()
@@ -47,7 +51,6 @@ fun LoginScreenRoot(
     }
 
     LoginScreen(
-        modifier = modifier,
         state = viewModel.state,
         onAction = { action ->
             when(action) {
@@ -61,39 +64,51 @@ fun LoginScreenRoot(
 
 @Composable
 fun LoginScreen(
-    modifier: Modifier,
     state: LoginState,
     onAction: (LoginAction) -> Unit
 ) {
-    val layoutType = rememberDeviceLayoutType()
 
-    when (layoutType) {
-        DeviceLayoutType.PORTRAIT ->
-            LoginPhoneScreen(
-                modifier = modifier,
-                state = state,
-                onEmailChanged = { onAction(LoginAction.OnEmailChanged(it)) },
-                onPasswordChanged = { onAction(LoginAction.OnPasswordChanged(it)) },
-                onLoginClick = { onAction(LoginAction.OnLoginClick) },
-                onRegisterClick = { onAction(LoginAction.OnRegisterClick) }
-            )
-        DeviceLayoutType.LANDSCAPE ->
-            LoginPhoneLandscapeScreen(
-                modifier = modifier,
-                state = state,
-                onEmailChanged = { onAction(LoginAction.OnEmailChanged(it)) },
-                onPasswordChanged = { onAction(LoginAction.OnPasswordChanged(it)) },
-                onLoginClick = { onAction(LoginAction.OnLoginClick) },
-                onRegisterClick = { onAction(LoginAction.OnRegisterClick) }
-            )
-        DeviceLayoutType.TABLET ->
-            LoginTabletScreen(
-                modifier = modifier,
-                state = state,
-                onEmailChanged = { onAction(LoginAction.OnEmailChanged(it)) },
-                onPasswordChanged = { onAction(LoginAction.OnPasswordChanged(it)) },
-                onLoginClick = { onAction(LoginAction.OnLoginClick) },
-                onRegisterClick = { onAction(LoginAction.OnRegisterClick) }
-            )
+    Scaffold(
+        modifier = Modifier.fillMaxSize()
+    ) { innerPadding ->
+
+        val layoutType = rememberDeviceLayoutType()
+
+        when (layoutType) {
+            DeviceLayoutType.PORTRAIT ->
+                LoginPhoneScreen(
+                    modifier = Modifier
+                        .background(MaterialTheme.colorScheme.primary)
+                        .padding(top = innerPadding.calculateTopPadding()),
+                    state = state,
+                    onEmailChanged = { onAction(LoginAction.OnEmailChanged(it)) },
+                    onPasswordChanged = { onAction(LoginAction.OnPasswordChanged(it)) },
+                    onLoginClick = { onAction(LoginAction.OnLoginClick) },
+                    onRegisterClick = { onAction(LoginAction.OnRegisterClick) }
+                )
+            DeviceLayoutType.LANDSCAPE ->
+                LoginPhoneLandscapeScreen(
+                    modifier = Modifier
+                        .background(MaterialTheme.colorScheme.primary)
+                        .padding(top = innerPadding.calculateTopPadding()),
+                    state = state,
+                    onEmailChanged = { onAction(LoginAction.OnEmailChanged(it)) },
+                    onPasswordChanged = { onAction(LoginAction.OnPasswordChanged(it)) },
+                    onLoginClick = { onAction(LoginAction.OnLoginClick) },
+                    onRegisterClick = { onAction(LoginAction.OnRegisterClick) }
+                )
+            DeviceLayoutType.TABLET ->
+                LoginTabletScreen(
+                    modifier = Modifier
+                        .background(MaterialTheme.colorScheme.primary)
+                        .padding(top = innerPadding.calculateTopPadding()),
+                    state = state,
+                    onEmailChanged = { onAction(LoginAction.OnEmailChanged(it)) },
+                    onPasswordChanged = { onAction(LoginAction.OnPasswordChanged(it)) },
+                    onLoginClick = { onAction(LoginAction.OnLoginClick) },
+                    onRegisterClick = { onAction(LoginAction.OnRegisterClick) }
+                )
+        }
     }
+
 }

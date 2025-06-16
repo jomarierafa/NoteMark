@@ -15,9 +15,9 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.jvrcoding.notemark.R
 import com.jvrcoding.notemark.auth.presentation.register.RegisterState
-import com.jvrcoding.notemark.core.presentation.NMActionButton
-import com.jvrcoding.notemark.core.presentation.NMPasswordTextField
-import com.jvrcoding.notemark.core.presentation.NMTextField
+import com.jvrcoding.notemark.core.presentation.components.NMActionButton
+import com.jvrcoding.notemark.core.presentation.components.NMPasswordTextField
+import com.jvrcoding.notemark.core.presentation.components.NMTextField
 import com.jvrcoding.notemark.ui.theme.NoteMarkTheme
 
 @Composable
