@@ -32,4 +32,7 @@
     <string name="youre_logged_in">You\'re logged in.</string>
     <string name="go_back">Go back</string>
     <string name="add_button">Add Button</string>
+    <string name="save_note">SAVE NOTE</string>
+    <string name="note_title">Note Title</string>
+    <string name="tap_to_enter_note_content">Tap to enter note content</string>
 </resources>
