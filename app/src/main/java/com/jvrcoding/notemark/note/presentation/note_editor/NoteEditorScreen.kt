@@ -31,7 +31,6 @@ import androidx.compose.ui.zIndex
 import com.jvrcoding.notemark.R
 import com.jvrcoding.notemark.core.presentation.components.NMToolbar
 import com.jvrcoding.notemark.core.presentation.util.rememberDeviceLayoutType
-import com.jvrcoding.notemark.note.presentation.notelist.NoteListAction
 import com.jvrcoding.notemark.ui.theme.NoteMarkTheme
 
 @Composable
