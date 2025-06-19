@@ -6,11 +6,10 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.navigation
-import androidx.navigation.compose.rememberNavController
 import com.jvrcoding.notemark.auth.presentation.landing.LandingScreenRoot
 import com.jvrcoding.notemark.auth.presentation.login.LoginScreenRoot
 import com.jvrcoding.notemark.auth.presentation.register.RegisterScreenRoot
-import com.jvrcoding.notemark.dashboard.presentation.DashboardScreen
+import com.jvrcoding.notemark.note.presentation.noteeditor.NoteEditorScreenRoot
 import com.jvrcoding.notemark.note.presentation.notelist.NoteListScreenRoot
 
 @Composable
@@ -108,74 +107,29 @@ private fun NavGraphBuilder.homeGraph(
     ) {
         composable<NoteList> {
             NoteListScreenRoot(
-                onAddClick = {}
+                onAddClick = {
+                    navController.navigate(NoteEditor)
+                }
             )
         }
-    }
-}
 
-@Composable
-fun RootNavigation(
-    navController: NavHostController = rememberNavController()
-) {
-    NavHost(
-        navController = navController,
-        startDestination = Landing,
-    ) {
-        composable<Landing> {
-            LandingScreenRoot(
-                onGetStartedClick = {
-                    navController.navigate(Register) {
-                        popUpTo(Landing) {
+        composable<NoteEditor> {
+            NoteEditorScreenRoot(
+                onBackClick = {
+                    navController.navigate(NoteList) {
+                        popUpTo(NoteEditor) {
                             inclusive = true
                         }
                     }
                 },
-                onLoginClick = {
-                    navController.navigate(Login) {
-                        popUpTo(Landing) {
+                onSuccessfulSave = {
+                    navController.navigate(NoteList) {
+                        popUpTo(NoteEditor) {
                             inclusive = true
                         }
                     }
                 }
             )
-        }
-        composable<Login> {
-            LoginScreenRoot(
-                onLoginSuccess = { },
-                onRegisterClick = {
-                    navController.navigate(Register) {
-                        popUpTo(Login) {
-                            inclusive = true
-                            saveState = true
-                        }
-                        restoreState = true
-                    }
-                }
-            )
-        }
-        composable<Register> {
-            RegisterScreenRoot(
-                onSuccessfulRegistration = {
-                    navController.navigate(Login) {
-                        popUpTo(Register) {
-                            inclusive = true
-                        }
-                    }
-                },
-                onLoginClick = {
-                    navController.navigate(Login) {
-                        popUpTo(Register) {
-                            inclusive = true
-                            saveState = true
-                        }
-                        restoreState = true
-                    }
-                }
-            )
-        }
-        composable<Dashboard> {
-            DashboardScreen()
         }
     }
 }

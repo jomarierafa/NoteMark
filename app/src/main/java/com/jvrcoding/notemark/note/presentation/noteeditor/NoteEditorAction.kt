@@ -1,4 +1,4 @@
-package com.jvrcoding.notemark.note.presentation.note_editor
+package com.jvrcoding.notemark.note.presentation.noteeditor
 
 sealed interface NoteEditorAction {
     data object OnBackClick: NoteEditorAction

@@ -1,4 +1,4 @@
-package com.jvrcoding.notemark.note.presentation.note_editor
+package com.jvrcoding.notemark.note.presentation.noteeditor
 
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.WindowInsets
@@ -13,7 +13,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.zIndex
 import com.jvrcoding.notemark.core.presentation.util.DeviceLayoutType
 import com.jvrcoding.notemark.ui.theme.ExtraLargeTitle
 
@@ -52,7 +51,6 @@ fun rememberNoteEditorLayoutConfig(
             boxZIndex = 1f,
             columnModifier = Modifier
                 .width(540.dp)
-                .zIndex(1f)
                 .padding(top = WindowInsets.safeDrawing.asPaddingValues().calculateTopPadding())
             ,
             titleTextStyle = MaterialTheme.typography.titleLarge,

@@ -15,4 +15,4 @@ object Register
 object NoteList
 
 @Serializable
-object Dashboard
+object NoteEditor
