@@ -1,8 +1,12 @@
 package com.jvrcoding.notemark.note.presentation.notelist
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.staggeredgrid.LazyVerticalStaggeredGrid
 import androidx.compose.foundation.lazy.staggeredgrid.StaggeredGridCells
@@ -10,10 +14,16 @@ import androidx.compose.foundation.lazy.staggeredgrid.items
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.jvrcoding.notemark.R
+import com.jvrcoding.notemark.core.presentation.components.NMCommonDialog
 import com.jvrcoding.notemark.core.presentation.components.NMFloatingActionButton
 import com.jvrcoding.notemark.core.presentation.components.NMToolbar
 import com.jvrcoding.notemark.core.presentation.util.rememberDeviceLayoutType
@@ -33,6 +43,7 @@ fun NoteListScreenRoot(
                 NoteListAction.OnAddButtonClick -> onAddClick()
                 else -> Unit
             }
+            viewModel.onAction(action)
         }
     )
 }
@@ -65,24 +76,69 @@ fun NoteListScreen(
         },
         modifier = Modifier.fillMaxSize()
     ) { innerPadding ->
-        LazyVerticalStaggeredGrid(
-            columns = StaggeredGridCells.Fixed(layoutConfig.columns),
-            modifier = Modifier
-                .fillMaxSize()
-                .background(MaterialTheme.colorScheme.surface)
-                .padding(top = innerPadding.calculateTopPadding()),
-            contentPadding = layoutConfig.contentPadding,
-            verticalItemSpacing = 16.dp,
-            horizontalArrangement = Arrangement.spacedBy(16.dp)
-        ) {
-            items(state.notes) { notes ->
-                NoteListItem(
-                    noteUi = notes,
-                    labelMaxChar = layoutConfig.maxLabelChar,
-                    titleTextStyle = layoutConfig.titleTextStyle,
-                    labelTextStyle = layoutConfig.labelTextStyle
+
+        if (state.notes.isEmpty()) {
+            Box(
+                modifier = Modifier
+                    .padding(top = innerPadding.calculateTopPadding())
+                    .background(MaterialTheme.colorScheme.surface)
+                    .fillMaxSize()
+            ) {
+                Text(
+                    text = stringResource(R.string.empty_note_message),
+                    style = MaterialTheme.typography.titleSmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    textAlign = TextAlign.Center,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .offset(y = 80.dp)
                 )
             }
+        } else {
+            LazyVerticalStaggeredGrid(
+                columns = StaggeredGridCells.Fixed(layoutConfig.columns),
+                modifier = Modifier
+                    .fillMaxSize()
+                    .background(MaterialTheme.colorScheme.surface)
+                    .padding(top = innerPadding.calculateTopPadding()),
+                contentPadding = layoutConfig.contentPadding,
+                verticalItemSpacing = 16.dp,
+                horizontalArrangement = Arrangement.spacedBy(16.dp)
+            ) {
+                items(state.notes) { note ->
+                    NoteListItem(
+                        modifier = Modifier
+                            .pointerInput(Unit) {
+                                detectTapGestures(
+                                    onLongPress = {
+                                        onAction(NoteListAction.OnNoteLongPressed(note.id))
+                                    }
+                                )
+                            },
+                        noteUi = note,
+                        labelMaxChar = layoutConfig.maxLabelChar,
+                        titleTextStyle = layoutConfig.titleTextStyle,
+                        labelTextStyle = layoutConfig.labelTextStyle
+                    )
+                }
+            }
+        }
+
+        state.noteToDelete?.let { noteId ->
+            NMCommonDialog(
+                title = stringResource(R.string.delete_note),
+                text = stringResource(
+                    R.string.are_you_sure_you_want_to_delete_this_note_this_action_cannot_be_undone
+                ),
+                positiveButtonText = stringResource(R.string.delete),
+                negativeButtonText = stringResource(R.string.cancel),
+                onDismiss = {
+                    onAction(NoteListAction.DismissDeleteDialog)
+                },
+                onConfirm = {
+                    onAction(NoteListAction.DeleteNote(noteId))
+                }
+            )
         }
     }
 }
@@ -121,7 +177,9 @@ private fun NoteListScreenLandscapePreview() {
 private fun NoteListScreenTabletPreview() {
     NoteMarkTheme {
         NoteListScreen(
-            state = NoteListState(),
+            state = NoteListState(
+                notes = listOf()
+            ),
             onAction = {}
         )
     }

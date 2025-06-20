@@ -4,25 +4,50 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
-import com.jvrcoding.notemark.note.presentation.notelist.model.NoteUi
+import androidx.lifecycle.viewModelScope
+import com.jvrcoding.notemark.core.domain.SessionStorage
+import com.jvrcoding.notemark.core.domain.note.NoteRepository
+import com.jvrcoding.notemark.note.presentation.notelist.notemapper.toNoteUi
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.launch
 
 
-class NoteListViewModel: ViewModel() {
+class NoteListViewModel(
+    private val noteRepository: NoteRepository,
+    private val sessionStorage: SessionStorage
+): ViewModel() {
 
     var state by mutableStateOf(NoteListState())
         private set
 
 
     init {
-        val dummyNotes: List<NoteUi> = List(10) { index ->
-            NoteUi(
-                id = index.toString(),
-                title = "Note Title $index",
-                label = "This is the content of note number $index. It might contain a preview or description.",
-                date = "23 APR"
-            )
-        }
+        noteRepository.getNotes().onEach { notes ->
+            val notesUi = notes.map { it.toNoteUi() }
+            state = state.copy(notes = notesUi)
+        }.launchIn(viewModelScope)
 
-        state = state.copy(notes = dummyNotes)
+        viewModelScope.launch {
+            noteRepository.fetchNotes()
+        }
+    }
+
+    fun onAction(action: NoteListAction) {
+        when(action) {
+            is NoteListAction.DeleteNote -> {
+                viewModelScope.launch {
+                    state = state.copy(noteToDelete = null)
+                    noteRepository.deleteNote(action.noteId)
+                }
+            }
+            is NoteListAction.OnNoteLongPressed -> {
+                state  = state.copy(noteToDelete = action.noteId)
+            }
+            NoteListAction.DismissDeleteDialog -> {
+                state = state.copy(noteToDelete = null)
+            }
+            else -> Unit
+        }
     }
 }

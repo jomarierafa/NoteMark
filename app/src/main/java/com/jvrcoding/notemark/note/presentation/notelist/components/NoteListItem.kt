@@ -55,7 +55,7 @@ fun NoteListItem(
         )
         Spacer(modifier = Modifier.height(4.dp))
         Text(
-            text = noteUi.label.previewWithEllipsis(labelMaxChar),
+            text = noteUi.content.previewWithEllipsis(labelMaxChar),
             color = MaterialTheme.colorScheme.onSurfaceVariant,
             style = labelTextStyle,
             overflow = TextOverflow.Ellipsis
@@ -75,7 +75,7 @@ private fun NoteListItemPreview() {
                 id = "1",
                 date = "19 APR",
                 title = "Title of the note",
-                label = "Augue non mauris ante viverra ut arcu sed ut lectus interdum morbi sed leo purus gravida non id mi augue.".previewWithEllipsis(50)
+                content = "Augue non mauris ante viverra ut arcu sed ut lectus interdum morbi sed leo purus gravida non id mi augue.".previewWithEllipsis(50)
             ),
             labelMaxChar = 30
         )

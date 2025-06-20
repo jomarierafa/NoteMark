@@ -1,6 +1,7 @@
 package com.jvrcoding.notemark.di
 
 import android.content.SharedPreferences
+import androidx.room.Room
 import androidx.security.crypto.EncryptedSharedPreferences
 import androidx.security.crypto.MasterKey
 import com.jvrcoding.notemark.MainViewModel
@@ -13,8 +14,16 @@ import com.jvrcoding.notemark.auth.domain.UserDataValidator
 import com.jvrcoding.notemark.auth.presentation.login.LoginViewModel
 import com.jvrcoding.notemark.auth.presentation.register.RegisterViewModel
 import com.jvrcoding.notemark.core.data.auth.EncryptedSessionStorage
+import com.jvrcoding.notemark.core.data.database.NoteDatabase
+import com.jvrcoding.notemark.core.data.database.RoomLocalNoteDataSource
 import com.jvrcoding.notemark.core.data.networking.HttpClientFactory
+import com.jvrcoding.notemark.core.data.note.NoteRepositoryImpl
 import com.jvrcoding.notemark.core.domain.SessionStorage
+import com.jvrcoding.notemark.core.domain.note.LocalNoteDataSource
+import com.jvrcoding.notemark.core.domain.note.NoteRepository
+import com.jvrcoding.notemark.core.domain.note.RemoteNoteDataSource
+import com.jvrcoding.notemark.note.data.KtorRemoteNoteDataSource
+import com.jvrcoding.notemark.note.presentation.noteeditor.NoteEditorViewModel
 import com.jvrcoding.notemark.note.presentation.notelist.NoteListViewModel
 import kotlinx.coroutines.CoroutineScope
 import org.koin.android.ext.koin.androidApplication
@@ -50,10 +59,28 @@ val appModule = module {
     }
     singleOf(::UserDataValidator)
     singleOf(::AuthRepositoryImpl).bind<AuthRepository>()
+    singleOf(::NoteRepositoryImpl).bind<NoteRepository>()
+
+    //database
+    single {
+        Room.databaseBuilder(
+            androidApplication(),
+            NoteDatabase::class.java,
+            "note.db"
+        ).build()
+    }
+    single { get<NoteDatabase>().noteDao }
+    singleOf(::RoomLocalNoteDataSource).bind<LocalNoteDataSource>()
+
+    //network
+    singleOf(::KtorRemoteNoteDataSource).bind<RemoteNoteDataSource>()
+
+
 
     //viewmodel
     viewModelOf(::MainViewModel)
     viewModelOf(::RegisterViewModel)
     viewModelOf(::LoginViewModel)
     viewModelOf(::NoteListViewModel)
+    viewModelOf(::NoteEditorViewModel)
 }

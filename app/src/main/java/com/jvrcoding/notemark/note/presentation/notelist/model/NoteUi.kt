@@ -4,5 +4,5 @@ data class NoteUi(
     val id: String,
     val date: String,
     val title: String,
-    val label: String,
+    val content: String,
 )

@@ -1,5 +1,6 @@
 package com.jvrcoding.notemark.note.presentation.noteeditor
 
+import android.widget.Toast
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
@@ -25,38 +26,54 @@ import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
-import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.jvrcoding.notemark.R
 import com.jvrcoding.notemark.core.presentation.components.NMToolbar
+import com.jvrcoding.notemark.core.presentation.util.ObserveAsEvents
 import com.jvrcoding.notemark.core.presentation.util.rememberDeviceLayoutType
 import com.jvrcoding.notemark.ui.theme.NoteMarkTheme
 import kotlinx.coroutines.launch
+import org.koin.androidx.compose.koinViewModel
 
 @Composable
 fun NoteEditorScreenRoot(
     onBackClick: () -> Unit,
-    onSuccessfulSave: () -> Unit
+    onSuccessfulSave: () -> Unit,
+    viewModel: NoteEditorViewModel = koinViewModel()
 ) {
+
+    val context = LocalContext.current
+    ObserveAsEvents(flow = viewModel.events) { event ->
+        when(event) {
+            is NoteEditorEvent.Error -> {
+                Toast.makeText(
+                    context,
+                    event.error.asString(context),
+                    Toast.LENGTH_LONG
+                ).show()
+            }
+            NoteEditorEvent.NoteSaved -> onSuccessfulSave()
+        }
+    }
     NoteEditorScreen(
+        state = viewModel.state,
         action = { action ->
             when (action) {
                 NoteEditorAction.OnBackClick -> onBackClick()
                 else -> Unit
             }
+            viewModel.onAction(action)
         }
     )
 
@@ -65,11 +82,9 @@ fun NoteEditorScreenRoot(
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class)
 @Composable
 fun NoteEditorScreen(
+    state: NoteEditorState,
     action: (NoteEditorAction) -> Unit
 ) {
-
-    var textFieldValue by remember { mutableStateOf(TextFieldValue()) }
-
 
     val scrollState = rememberScrollState()
     val bringIntoViewRequester = remember { BringIntoViewRequester() }
@@ -102,7 +117,6 @@ fun NoteEditorScreen(
 
     ) { innerPadding ->
         val layoutConfig = rememberNoteEditorLayoutConfig(layoutType, innerPadding)
-        var firstText by remember { mutableStateOf("") }
 
         Box(
             modifier = Modifier
@@ -117,9 +131,9 @@ fun NoteEditorScreen(
                     .fillMaxHeight(),
             ) {
                 TextField(
-                    value = firstText,
+                    value = state.title,
                     textStyle = layoutConfig.titleTextStyle,
-                    onValueChange = { firstText = it },
+                    onValueChange = { action(NoteEditorAction.OnTitleChanged(it)) },
                     placeholder = {
                         Text(
                             text = stringResource(R.string.note_title),
@@ -150,16 +164,14 @@ fun NoteEditorScreen(
                 Spacer(modifier = Modifier.height(16.dp))
 
                 BasicTextField(
-                    value = textFieldValue,
-                    onValueChange = {
-                        textFieldValue = it
-                    },
+                    value = state.content,
+                    onValueChange = { action(NoteEditorAction.OnContentChanged(it)) },
                     modifier = Modifier
                         .padding(horizontal = layoutConfig.textFieldPadding)
                         .fillMaxWidth()
                         .bringIntoViewRequester(bringIntoViewRequester),
                     onTextLayout = { textLayoutResult ->
-                        val cursorRect = textLayoutResult.getCursorRect(textFieldValue.selection.start)
+                        val cursorRect = textLayoutResult.getCursorRect(state.content.selection.start)
 
                         coroutineScope.launch {
                             bringIntoViewRequester.bringIntoView(cursorRect)
@@ -181,7 +193,7 @@ fun NoteEditorScreen(
                                 .padding(horizontal = 16.dp, vertical = 12.dp)
                                 .fillMaxWidth()
                         ) {
-                            if (textFieldValue.text.isEmpty()) {
+                            if (state.content.text.isEmpty()) {
                                 Text(
                                     text = stringResource(R.string.tap_to_enter_note_content),
                                     color = MaterialTheme.colorScheme.onSurfaceVariant,
@@ -202,6 +214,7 @@ fun NoteEditorScreen(
 private fun NoteEditorScreenPreview() {
     NoteMarkTheme {
         NoteEditorScreen(
+            state = NoteEditorState(),
             action = {}
         )
     }
@@ -214,6 +227,7 @@ private fun NoteEditorScreenPreview() {
 private fun NoteEditorScreenLandscapePreview() {
     NoteMarkTheme {
         NoteEditorScreen(
+            state = NoteEditorState(),
             action = {}
         )
     }
@@ -230,6 +244,7 @@ private fun NoteEditorScreenLandscapePreview() {
 private fun NoteEditorScreenTabletPreview() {
     NoteMarkTheme {
         NoteEditorScreen(
+            state = NoteEditorState(),
             action = {}
         )
     }
