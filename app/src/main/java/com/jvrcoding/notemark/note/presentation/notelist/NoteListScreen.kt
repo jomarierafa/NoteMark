@@ -1,5 +1,6 @@
 package com.jvrcoding.notemark.note.presentation.notelist
 
+import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Arrangement
@@ -18,14 +19,17 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.jvrcoding.notemark.R
+import com.jvrcoding.notemark.core.domain.note.NoteId
 import com.jvrcoding.notemark.core.presentation.components.NMCommonDialog
 import com.jvrcoding.notemark.core.presentation.components.NMFloatingActionButton
 import com.jvrcoding.notemark.core.presentation.components.NMToolbar
+import com.jvrcoding.notemark.core.presentation.util.ObserveAsEvents
 import com.jvrcoding.notemark.core.presentation.util.rememberDeviceLayoutType
 import com.jvrcoding.notemark.note.presentation.notelist.components.NoteListItem
 import com.jvrcoding.notemark.ui.theme.NoteMarkTheme
@@ -33,18 +37,32 @@ import org.koin.androidx.compose.koinViewModel
 
 @Composable
 fun NoteListScreenRoot(
-    onAddClick: () -> Unit,
+    onSuccessfulAdd: (NoteId) -> Unit,
     viewModel: NoteListViewModel = koinViewModel()
 ) {
+
+    val context = LocalContext.current
+    ObserveAsEvents(flow = viewModel.events) { event ->
+        when(event) {
+            is NoteListEvent.Error -> {
+                Toast.makeText(
+                    context,
+                    event.error.asString(context),
+                    Toast.LENGTH_LONG
+                ).show()
+            }
+            is NoteListEvent.NoteSaved -> onSuccessfulAdd(event.noteId)
+        }
+    }
     NoteListScreen(
         state = viewModel.state,
-        onAction = { action ->
-            when (action) {
-                NoteListAction.OnAddButtonClick -> onAddClick()
-                else -> Unit
-            }
-            viewModel.onAction(action)
-        }
+        onAction = viewModel::onAction
+//            when (action) {
+//                NoteListAction.OnAddButtonClick -> onAddClick()
+//                else -> Unit
+//            }
+//            viewModel.onAction(action)
+//        }
     )
 }
 
@@ -105,11 +123,16 @@ fun NoteListScreen(
                 verticalItemSpacing = 16.dp,
                 horizontalArrangement = Arrangement.spacedBy(16.dp)
             ) {
-                items(state.notes) { note ->
+                items(
+                    items = state.notes,
+                    key = {  it.id }
+                ) { note ->
                     NoteListItem(
                         modifier = Modifier
                             .pointerInput(Unit) {
                                 detectTapGestures(
+                                    onTap = {
+                                    },
                                     onLongPress = {
                                         onAction(NoteListAction.OnNoteLongPressed(note.id))
                                     }

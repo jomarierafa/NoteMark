@@ -3,9 +3,12 @@ package com.jvrcoding.notemark.note.presentation.noteeditor
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.text.TextRange
+import androidx.compose.ui.text.input.TextFieldValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.jvrcoding.notemark.core.domain.note.Note
+import com.jvrcoding.notemark.core.domain.note.NoteId
 import com.jvrcoding.notemark.core.domain.note.NoteRepository
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.receiveAsFlow
@@ -17,7 +20,7 @@ import com.jvrcoding.notemark.core.presentation.util.asUiText
 
 class NoteEditorViewModel(
     private val noteRepository: NoteRepository
-): ViewModel() {
+) : ViewModel() {
 
     var state by mutableStateOf(NoteEditorState())
         private set
@@ -27,26 +30,52 @@ class NoteEditorViewModel(
 
 
     fun onAction(action: NoteEditorAction) {
-        when(action) {
-            NoteEditorAction.OnSaveNoteClick -> {
-                saveNote()
+        when (action) {
+            is NoteEditorAction.GetNote -> {
+                getNote(action.id)
             }
+
+            is NoteEditorAction.OnSaveNoteClick -> {
+                saveNote(state.id)
+            }
+
             is NoteEditorAction.OnTitleChanged -> {
                 state = state.copy(title = action.value)
             }
+
             is NoteEditorAction.OnContentChanged -> {
                 state = state.copy(content = action.value)
             }
-            else -> Unit
+
+            is NoteEditorAction.OnBackClick -> {
+                viewModelScope.launch {
+                    eventChannel.send(NoteEditorEvent.NoteDeleted)
+//                    noteRepository.deleteNote(state.id)
+                }
+            }
         }
     }
 
-    private fun saveNote() {
+    private fun getNote(id: NoteId) {
+        viewModelScope.launch {
+            val note = noteRepository.getNote(id)
+            state = state.copy(
+                id = id,
+                title = TextFieldValue(
+                    text = note.title,
+                    selection = TextRange(note.title.length)
+                ),
+                content = TextFieldValue(text = note.content)
+            )
+        }
+    }
+
+    private fun saveNote(id: NoteId) {
         viewModelScope.launch {
             state = state.copy(isSavingNote = true)
             val note = Note(
-                id = null,
-                title = state.title,
+                id = id,
+                title = state.title.text,
                 content = state.content.text,
                 createdAt = ZonedDateTime.now()
                     .withZoneSameInstant(ZoneId.of("UTC")),
@@ -54,10 +83,11 @@ class NoteEditorViewModel(
                     .withZoneSameInstant(ZoneId.of("UTC"))
             )
 
-            when(val result = noteRepository.upsertNote(note)) {
+            when (val result = noteRepository.updateNote(note)) {
                 is Result.Error -> {
                     eventChannel.send(NoteEditorEvent.Error(result.error.asUiText()))
                 }
+
                 is Result.Success -> {
                     eventChannel.send(NoteEditorEvent.NoteSaved)
                 }

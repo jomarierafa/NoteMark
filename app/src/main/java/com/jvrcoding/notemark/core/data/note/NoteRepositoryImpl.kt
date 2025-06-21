@@ -19,6 +19,10 @@ class NoteRepositoryImpl(
     private val applicationScope: CoroutineScope
 ): NoteRepository {
 
+    override suspend fun getNote(id: NoteId): Note {
+        return localNoteDataSource.getNote(id)
+    }
+
     override fun getNotes(): Flow<List<Note>> {
         return localNoteDataSource.getNotes()
     }
@@ -34,32 +38,37 @@ class NoteRepositoryImpl(
         }
     }
 
-    override suspend fun upsertNote(note: Note): EmptyResult<DataError> {
+    override suspend fun createNote(note: Note): EmptyResult<DataError> {
         val localResult = localNoteDataSource.upsertNote(note)
         if(localResult !is Result.Success) {
             return localResult.asEmptyDataResult()
         }
 
-        val noteWithId = note.copy(id = localResult.data)
-
-        val remoteResult = remoteNoteDataSource.postNote(
-            note = noteWithId
-        )
-
-
-        return when(remoteResult) {
-            is Result.Error -> {
-               // TODO(handle error here)
-
-
-                Result.Success(Unit)
+        return applicationScope.async {
+            val remoteResult = remoteNoteDataSource.putNote(note = note)
+            if(remoteResult is Result.Error) {
+                return@async Result.Success(Unit)
             }
-            is Result.Success -> {
-                applicationScope.async {
-                    localNoteDataSource.upsertNote(remoteResult.data).asEmptyDataResult()
-                }.await()
-            }
+
+            return@async remoteResult.asEmptyDataResult()
+        }.await()
+    }
+
+    override suspend fun updateNote(note: Note): EmptyResult<DataError> {
+        val localResult = localNoteDataSource.upsertNote(note)
+        if(localResult !is Result.Success) {
+            return localResult.asEmptyDataResult()
         }
+
+        return applicationScope.async {
+            val noteWithId = note.copy(id = localResult.data)
+            val remoteResult = remoteNoteDataSource.putNote( note = noteWithId)
+            if(remoteResult is Result.Error) {
+                return@async Result.Success(Unit)
+            }
+
+            return@async remoteResult.asEmptyDataResult()
+        }.await()
     }
 
     override suspend fun deleteNote(id: NoteId) {

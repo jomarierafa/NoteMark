@@ -39,6 +39,7 @@ import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.jvrcoding.notemark.R
+import com.jvrcoding.notemark.core.domain.note.NoteId
 import com.jvrcoding.notemark.core.presentation.components.NMToolbar
 import com.jvrcoding.notemark.core.presentation.util.ObserveAsEvents
 import com.jvrcoding.notemark.core.presentation.util.rememberDeviceLayoutType
@@ -48,7 +49,8 @@ import org.koin.androidx.compose.koinViewModel
 
 @Composable
 fun NoteEditorScreenRoot(
-    onBackClick: () -> Unit,
+    id: NoteId,
+    onSuccessfulDelete: () -> Unit,
     onSuccessfulSave: () -> Unit,
     viewModel: NoteEditorViewModel = koinViewModel()
 ) {
@@ -64,17 +66,20 @@ fun NoteEditorScreenRoot(
                 ).show()
             }
             NoteEditorEvent.NoteSaved -> onSuccessfulSave()
+            NoteEditorEvent.NoteDeleted -> onSuccessfulDelete()
         }
     }
     NoteEditorScreen(
+        id = id,
         state = viewModel.state,
-        action = { action ->
-            when (action) {
-                NoteEditorAction.OnBackClick -> onBackClick()
-                else -> Unit
-            }
-            viewModel.onAction(action)
-        }
+        action = viewModel::onAction
+//            { action ->
+//            when (action) {
+//                NoteEditorAction.OnBackClick -> onBackClick()
+//                else -> Unit
+//            }
+//            viewModel.onAction(action)
+//        }
     )
 
 }
@@ -82,6 +87,7 @@ fun NoteEditorScreenRoot(
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class)
 @Composable
 fun NoteEditorScreen(
+    id: NoteId,
     state: NoteEditorState,
     action: (NoteEditorAction) -> Unit
 ) {
@@ -96,6 +102,7 @@ fun NoteEditorScreen(
 
     val focusRequester = remember { FocusRequester() }
     LaunchedEffect(Unit) {
+        action(NoteEditorAction.GetNote(id))
         focusRequester.requestFocus()
     }
 
@@ -214,8 +221,9 @@ fun NoteEditorScreen(
 private fun NoteEditorScreenPreview() {
     NoteMarkTheme {
         NoteEditorScreen(
+            id = "",
             state = NoteEditorState(),
-            action = {}
+            action = {},
         )
     }
 }
@@ -227,6 +235,7 @@ private fun NoteEditorScreenPreview() {
 private fun NoteEditorScreenLandscapePreview() {
     NoteMarkTheme {
         NoteEditorScreen(
+            id = "",
             state = NoteEditorState(),
             action = {}
         )
@@ -244,6 +253,7 @@ private fun NoteEditorScreenLandscapePreview() {
 private fun NoteEditorScreenTabletPreview() {
     NoteMarkTheme {
         NoteEditorScreen(
+            id = "",
             state = NoteEditorState(),
             action = {}
         )

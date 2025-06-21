@@ -1,5 +1,6 @@
 package com.jvrcoding.notemark.core.navigation
 
+import com.jvrcoding.notemark.core.domain.note.NoteId
 import kotlinx.serialization.Serializable
 
 @Serializable
@@ -15,4 +16,6 @@ object Register
 object NoteList
 
 @Serializable
-object NoteEditor
+data class NoteEditor(
+    val id: NoteId = ""
+)

@@ -16,6 +16,10 @@ class RoomLocalNoteDataSource(
     private val noteDao: NoteDao
 ): LocalNoteDataSource {
 
+    override suspend fun getNote(id: NoteId): Note {
+        return noteDao.getNote(id).toNote()
+    }
+
     override fun getNotes(): Flow<List<Note>> {
         return noteDao.getNotes()
             .map { noteEntities ->
@@ -43,7 +47,7 @@ class RoomLocalNoteDataSource(
         }
     }
 
-    override suspend fun deleteNote(id: String) {
+    override suspend fun deleteNote(id: NoteId) {
         noteDao.deleteNote(id)
     }
 

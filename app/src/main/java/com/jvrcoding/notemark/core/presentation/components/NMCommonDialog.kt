@@ -18,7 +18,7 @@ fun NMCommonDialog(
     onConfirm: () -> Unit
 ) {
         AlertDialog(
-            containerColor = MaterialTheme.colorScheme.surface,
+            containerColor = MaterialTheme.colorScheme.surfaceContainerLowest,
             onDismissRequest = onDismiss,
             title = {
                 Text(text = title)

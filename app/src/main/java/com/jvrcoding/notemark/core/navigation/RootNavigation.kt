@@ -6,6 +6,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.navigation
+import androidx.navigation.toRoute
 import com.jvrcoding.notemark.auth.presentation.landing.LandingScreenRoot
 import com.jvrcoding.notemark.auth.presentation.login.LoginScreenRoot
 import com.jvrcoding.notemark.auth.presentation.register.RegisterScreenRoot
@@ -107,27 +108,23 @@ private fun NavGraphBuilder.homeGraph(
     ) {
         composable<NoteList> {
             NoteListScreenRoot(
-                onAddClick = {
-                    navController.navigate(NoteEditor)
+                onSuccessfulAdd = { noteId ->
+                    navController.navigate(
+                        NoteEditor(id = noteId)
+                    )
                 }
             )
         }
 
         composable<NoteEditor> {
+            val args = it.toRoute<NoteEditor>()
             NoteEditorScreenRoot(
-                onBackClick = {
-                    navController.navigate(NoteList) {
-                        popUpTo(NoteEditor) {
-                            inclusive = true
-                        }
-                    }
+                id = args.id,
+                onSuccessfulDelete = {
+                    navController.navigateUp()
                 },
                 onSuccessfulSave = {
-                    navController.navigate(NoteList) {
-                        popUpTo(NoteEditor) {
-                            inclusive = true
-                        }
-                    }
+                    navController.navigateUp()
                 }
             )
         }
