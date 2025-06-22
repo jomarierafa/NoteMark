@@ -108,6 +108,11 @@ private fun NavGraphBuilder.homeGraph(
     ) {
         composable<NoteList> {
             NoteListScreenRoot(
+                onTapNote = { noteId ->
+                    navController.navigate(
+                        NoteEditor(id = noteId)
+                    )
+                },
                 onSuccessfulAdd = { noteId ->
                     navController.navigate(
                         NoteEditor(id = noteId)
@@ -124,6 +129,9 @@ private fun NavGraphBuilder.homeGraph(
                     navController.navigateUp()
                 },
                 onSuccessfulSave = {
+                    navController.navigateUp()
+                },
+                onDiscardChanges = {
                     navController.navigateUp()
                 }
             )

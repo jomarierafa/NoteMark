@@ -28,45 +28,62 @@ class NoteEditorViewModel(
     private val eventChannel = Channel<NoteEditorEvent>()
     val events = eventChannel.receiveAsFlow()
 
+    private var initialTitleValue: String = ""
+    private var initialContentValue: String = ""
+
 
     fun onAction(action: NoteEditorAction) {
         when (action) {
             is NoteEditorAction.GetNote -> {
                 getNote(action.id)
             }
-
             is NoteEditorAction.OnSaveNoteClick -> {
                 saveNote(state.id)
             }
-
             is NoteEditorAction.OnTitleChanged -> {
                 state = state.copy(title = action.value)
             }
-
             is NoteEditorAction.OnContentChanged -> {
                 state = state.copy(content = action.value)
             }
-
             is NoteEditorAction.OnBackClick -> {
                 viewModelScope.launch {
-                    eventChannel.send(NoteEditorEvent.NoteDeleted)
-//                    noteRepository.deleteNote(state.id)
+                    if(initialTitleValue == state.title.text
+                        && initialContentValue == state.content.text
+                    ) {
+                        eventChannel.send(NoteEditorEvent.DiscardChanges)
+//                        noteRepository.deleteNote(state.id)
+                    } else {
+                        state = state.copy(showDiscardDialog = true)
+                    }
                 }
+            }
+            NoteEditorAction.OnDiscardClick -> {
+                viewModelScope.launch {
+                    state = state.copy(showDiscardDialog = false)
+                    eventChannel.send(NoteEditorEvent.DiscardChanges)
+                }
+            }
+            NoteEditorAction.OnKeepEditingClick -> {
+                state = state.copy(showDiscardDialog = false)
             }
         }
     }
 
     private fun getNote(id: NoteId) {
         viewModelScope.launch {
-            val note = noteRepository.getNote(id)
-            state = state.copy(
-                id = id,
-                title = TextFieldValue(
-                    text = note.title,
-                    selection = TextRange(note.title.length)
-                ),
-                content = TextFieldValue(text = note.content)
-            )
+            noteRepository.getNote(id).let { note ->
+                state = state.copy(
+                    id = id,
+                    title = TextFieldValue(
+                        text = note.title,
+                        selection = TextRange(note.title.length)
+                    ),
+                    content = TextFieldValue(text = note.content)
+                )
+                initialTitleValue = note.title
+                initialContentValue = note.content
+            }
         }
     }
 
@@ -95,6 +112,9 @@ class NoteEditorViewModel(
 
             state = state.copy(isSavingNote = false)
         }
+    }
+
+    private fun navigateBack() {
 
     }
 

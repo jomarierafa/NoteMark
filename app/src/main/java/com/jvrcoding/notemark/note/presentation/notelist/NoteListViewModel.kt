@@ -30,7 +30,6 @@ class NoteListViewModel(
     private val eventChannel = Channel<NoteListEvent>()
     val events = eventChannel.receiveAsFlow()
 
-
     init {
         noteRepository.getNotes().onEach { notes ->
             val notesUi = notes.map { it.toNoteUi() }
@@ -38,6 +37,10 @@ class NoteListViewModel(
         }.launchIn(viewModelScope)
 
         viewModelScope.launch {
+            sessionStorage.get()?.let {
+                state = state.copy(username = it.username)
+            }
+
             noteRepository.fetchNotes()
         }
     }
@@ -59,6 +62,7 @@ class NoteListViewModel(
             NoteListAction.DismissDeleteDialog -> {
                 state = state.copy(noteToDelete = null)
             }
+            else -> Unit
         }
     }
 

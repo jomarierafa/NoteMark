@@ -30,6 +30,7 @@ import com.jvrcoding.notemark.core.presentation.components.NMCommonDialog
 import com.jvrcoding.notemark.core.presentation.components.NMFloatingActionButton
 import com.jvrcoding.notemark.core.presentation.components.NMToolbar
 import com.jvrcoding.notemark.core.presentation.util.ObserveAsEvents
+import com.jvrcoding.notemark.core.presentation.util.getInitials
 import com.jvrcoding.notemark.core.presentation.util.rememberDeviceLayoutType
 import com.jvrcoding.notemark.note.presentation.notelist.components.NoteListItem
 import com.jvrcoding.notemark.ui.theme.NoteMarkTheme
@@ -38,6 +39,7 @@ import org.koin.androidx.compose.koinViewModel
 @Composable
 fun NoteListScreenRoot(
     onSuccessfulAdd: (NoteId) -> Unit,
+    onTapNote: (NoteId) -> Unit,
     viewModel: NoteListViewModel = koinViewModel()
 ) {
 
@@ -56,13 +58,13 @@ fun NoteListScreenRoot(
     }
     NoteListScreen(
         state = viewModel.state,
-        onAction = viewModel::onAction
-//            when (action) {
-//                NoteListAction.OnAddButtonClick -> onAddClick()
-//                else -> Unit
-//            }
-//            viewModel.onAction(action)
-//        }
+        onAction = { action ->
+            when (action) {
+                is NoteListAction.OnTapNote -> onTapNote(action.id)
+                else -> Unit
+            }
+            viewModel.onAction(action)
+        }
     )
 }
 
@@ -83,8 +85,8 @@ fun NoteListScreen(
                     .background(MaterialTheme.colorScheme.surfaceContainerLowest)
                     .padding(layoutConfig.toolBarPadding),
                 showBackButton = false,
-                title = "NoteMark",
-                nameInitial = "JR",
+                title = stringResource(R.string.notemark),
+                nameInitial = state.username.getInitials(),
             )
         },
         floatingActionButton = {
@@ -129,9 +131,11 @@ fun NoteListScreen(
                 ) { note ->
                     NoteListItem(
                         modifier = Modifier
+                            .animateItem()
                             .pointerInput(Unit) {
                                 detectTapGestures(
                                     onTap = {
+                                        onAction(NoteListAction.OnTapNote(note.id))
                                     },
                                     onLongPress = {
                                         onAction(NoteListAction.OnNoteLongPressed(note.id))

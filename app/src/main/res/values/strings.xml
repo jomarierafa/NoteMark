@@ -40,4 +40,9 @@
     <string name="cancel">Cancel</string>
     <string name="delete">Delete</string>
     <string name="empty_note_message">You’ve got an empty board, \nlet’s place your first note on it!</string>
+    <string name="notemark">NoteMark</string>
+    <string name="discard_changes">Discard Changes?</string>
+    <string name="discard_dialog_message">You have unsaved changes. If you discard now, all changes will be lost.</string>
+    <string name="discard">Discard</string>
+    <string name="keep_editing">Keep Editing</string>
 </resources>

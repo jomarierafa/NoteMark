@@ -40,6 +40,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.jvrcoding.notemark.R
 import com.jvrcoding.notemark.core.domain.note.NoteId
+import com.jvrcoding.notemark.core.presentation.components.NMCommonDialog
 import com.jvrcoding.notemark.core.presentation.components.NMToolbar
 import com.jvrcoding.notemark.core.presentation.util.ObserveAsEvents
 import com.jvrcoding.notemark.core.presentation.util.rememberDeviceLayoutType
@@ -52,6 +53,7 @@ fun NoteEditorScreenRoot(
     id: NoteId,
     onSuccessfulDelete: () -> Unit,
     onSuccessfulSave: () -> Unit,
+    onDiscardChanges: () -> Unit,
     viewModel: NoteEditorViewModel = koinViewModel()
 ) {
 
@@ -67,12 +69,13 @@ fun NoteEditorScreenRoot(
             }
             NoteEditorEvent.NoteSaved -> onSuccessfulSave()
             NoteEditorEvent.NoteDeleted -> onSuccessfulDelete()
+            NoteEditorEvent.DiscardChanges -> onDiscardChanges()
         }
     }
     NoteEditorScreen(
         id = id,
         state = viewModel.state,
-        action = viewModel::onAction
+        onAction = viewModel::onAction
 //            { action ->
 //            when (action) {
 //                NoteEditorAction.OnBackClick -> onBackClick()
@@ -89,7 +92,7 @@ fun NoteEditorScreenRoot(
 fun NoteEditorScreen(
     id: NoteId,
     state: NoteEditorState,
-    action: (NoteEditorAction) -> Unit
+    onAction: (NoteEditorAction) -> Unit
 ) {
 
     val scrollState = rememberScrollState()
@@ -102,7 +105,7 @@ fun NoteEditorScreen(
 
     val focusRequester = remember { FocusRequester() }
     LaunchedEffect(Unit) {
-        action(NoteEditorAction.GetNote(id))
+        onAction(NoteEditorAction.GetNote(id))
         focusRequester.requestFocus()
     }
 
@@ -116,8 +119,8 @@ fun NoteEditorScreen(
                 showBackButton = true,
                 title = "",
                 actionText = stringResource(R.string.save_note),
-                onBackClick = { action(NoteEditorAction.OnBackClick) },
-                onActionClick = { action(NoteEditorAction.OnSaveNoteClick) }
+                onBackClick = { onAction(NoteEditorAction.OnBackClick) },
+                onActionClick = { onAction(NoteEditorAction.OnSaveNoteClick) }
             )
         },
         modifier = Modifier.fillMaxSize()
@@ -140,7 +143,7 @@ fun NoteEditorScreen(
                 TextField(
                     value = state.title,
                     textStyle = layoutConfig.titleTextStyle,
-                    onValueChange = { action(NoteEditorAction.OnTitleChanged(it)) },
+                    onValueChange = { onAction(NoteEditorAction.OnTitleChanged(it)) },
                     placeholder = {
                         Text(
                             text = stringResource(R.string.note_title),
@@ -172,7 +175,7 @@ fun NoteEditorScreen(
 
                 BasicTextField(
                     value = state.content,
-                    onValueChange = { action(NoteEditorAction.OnContentChanged(it)) },
+                    onValueChange = { onAction(NoteEditorAction.OnContentChanged(it)) },
                     modifier = Modifier
                         .padding(horizontal = layoutConfig.textFieldPadding)
                         .fillMaxWidth()
@@ -213,6 +216,21 @@ fun NoteEditorScreen(
                 )
             }
         }
+
+        if(state.showDiscardDialog) {
+            NMCommonDialog(
+                title = stringResource(R.string.discard_changes),
+                text = stringResource(R.string.discard_dialog_message),
+                positiveButtonText = stringResource(R.string.discard),
+                negativeButtonText = stringResource(R.string.keep_editing),
+                onDismiss = {
+                    onAction(NoteEditorAction.OnKeepEditingClick)
+                },
+                onConfirm = {
+                    onAction(NoteEditorAction.OnDiscardClick)
+                }
+            )
+        }
     }
 }
 
@@ -223,7 +241,7 @@ private fun NoteEditorScreenPreview() {
         NoteEditorScreen(
             id = "",
             state = NoteEditorState(),
-            action = {},
+            onAction = {},
         )
     }
 }
@@ -237,7 +255,7 @@ private fun NoteEditorScreenLandscapePreview() {
         NoteEditorScreen(
             id = "",
             state = NoteEditorState(),
-            action = {}
+            onAction = {}
         )
     }
 }
@@ -255,7 +273,7 @@ private fun NoteEditorScreenTabletPreview() {
         NoteEditorScreen(
             id = "",
             state = NoteEditorState(),
-            action = {}
+            onAction = {}
         )
     }
 }

@@ -8,4 +8,5 @@ data class NoteEditorState(
     val title: TextFieldValue = TextFieldValue(),
     val content: TextFieldValue = TextFieldValue(),
     val isSavingNote: Boolean = false,
+    val showDiscardDialog: Boolean = false,
 )
