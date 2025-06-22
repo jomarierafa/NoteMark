@@ -6,12 +6,12 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.relocation.BringIntoViewRequester
 import androidx.compose.foundation.relocation.bringIntoViewRequester
 import androidx.compose.foundation.rememberScrollState
@@ -34,6 +34,7 @@ import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.style.TextDecoration
@@ -97,10 +98,11 @@ fun NoteEditorScreen(
     onAction: (NoteEditorAction) -> Unit
 ) {
 
+    val density = LocalDensity.current
+
     val scrollState = rememberScrollState()
     val bringIntoViewRequester = remember { BringIntoViewRequester() }
     val coroutineScope = rememberCoroutineScope()
-
 
     val layoutType = rememberDeviceLayoutType()
     val toolbarPAdding = rememberToolbarPadding(layoutType)
@@ -137,15 +139,15 @@ fun NoteEditorScreen(
 
         Box(
             modifier = Modifier
-                .verticalScroll(scrollState)
 //                .zIndex(layoutConfig.boxZIndex)
                 .fillMaxSize()
-                .imePadding(),
+                .imePadding()
+                .verticalScroll(scrollState),
             contentAlignment = Alignment.TopCenter
         ) {
             Column(
                 modifier = layoutConfig.columnModifier
-                    .fillMaxHeight(),
+                    .wrapContentHeight(),
             ) {
                 TextField(
                     value = state.title,
@@ -191,7 +193,12 @@ fun NoteEditorScreen(
                         val cursorRect = textLayoutResult.getCursorRect(state.content.selection.start)
 
                         coroutineScope.launch {
-                            bringIntoViewRequester.bringIntoView(cursorRect)
+                            bringIntoViewRequester.bringIntoView(
+                                cursorRect.copy(
+                                    // scroll a bit extra
+                                    bottom = cursorRect.bottom + with(density) { 80.dp.toPx() }
+                                )
+                            )
                         }
                     },
                     textStyle = MaterialTheme.typography.bodyLarge.copy(
