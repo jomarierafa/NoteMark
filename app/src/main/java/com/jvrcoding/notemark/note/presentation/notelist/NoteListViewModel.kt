@@ -8,6 +8,8 @@ import androidx.lifecycle.viewModelScope
 import com.jvrcoding.notemark.core.domain.SessionStorage
 import com.jvrcoding.notemark.core.domain.note.Note
 import com.jvrcoding.notemark.core.domain.note.NoteRepository
+import com.jvrcoding.notemark.core.domain.util.Result
+import com.jvrcoding.notemark.core.presentation.util.asUiText
 import com.jvrcoding.notemark.note.presentation.notelist.notemapper.toNoteUi
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.launchIn
@@ -68,13 +70,10 @@ class NoteListViewModel(
 
 
     private fun saveNote() {
+        if(state.isAddingNote) return
+
         viewModelScope.launch {
-
             val noteId = UUID.randomUUID().toString()
-            eventChannel.send(NoteListEvent.NoteSaved(noteId))
-
-            // adding delay here to avoid flash of empty note
-//            delay(500)
 
             state = state.copy(isAddingNote = true)
             val note = Note(
@@ -87,7 +86,15 @@ class NoteListViewModel(
                     .withZoneSameInstant(ZoneId.of("UTC"))
             )
 
-            noteRepository.createNote(note)
+            when (val result = noteRepository.createNote(note)) {
+                is Result.Error -> {
+                    eventChannel.send(NoteListEvent.Error(result.error.asUiText()))
+                }
+                is Result.Success -> {
+                    eventChannel.send(NoteListEvent.NoteSaved(noteId))
+                }
+            }
+
             state = state.copy(isAddingNote = false)
         }
 

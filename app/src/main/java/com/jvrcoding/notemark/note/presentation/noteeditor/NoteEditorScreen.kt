@@ -32,6 +32,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
@@ -42,6 +43,7 @@ import com.jvrcoding.notemark.R
 import com.jvrcoding.notemark.core.domain.note.NoteId
 import com.jvrcoding.notemark.core.presentation.components.NMCommonDialog
 import com.jvrcoding.notemark.core.presentation.components.NMToolbar
+import com.jvrcoding.notemark.core.presentation.util.DeviceLayoutType
 import com.jvrcoding.notemark.core.presentation.util.ObserveAsEvents
 import com.jvrcoding.notemark.core.presentation.util.rememberDeviceLayoutType
 import com.jvrcoding.notemark.ui.theme.NoteMarkTheme
@@ -109,13 +111,18 @@ fun NoteEditorScreen(
         focusRequester.requestFocus()
     }
 
-
-
     Scaffold(
         containerColor =  MaterialTheme.colorScheme.surface,
         topBar = {
             NMToolbar(
-                modifier = Modifier.padding(toolbarPAdding),
+                modifier = Modifier
+                    .background(
+                        if(layoutType == DeviceLayoutType.LANDSCAPE)
+                            Color.Transparent
+                        else
+                            MaterialTheme.colorScheme.surface
+                    )
+                    .padding(toolbarPAdding),
                 showBackButton = true,
                 title = "",
                 actionText = stringResource(R.string.save_note),

@@ -36,10 +36,12 @@ class KtorRemoteNoteDataSource(
     }
 
     override suspend fun putNote(note: Note): Result<Note, DataError.Network> {
-        return httpClient.put<UpsertNoteRequest, Note>(
+        return httpClient.put<UpsertNoteRequest, NoteDto>(
             route = "/api/notes",
             body = note.toUpsertNoteRequest()
-        )
+        ).map { noteDto ->
+            noteDto.toNote()
+        }
     }
 
     override suspend fun deleteNote(id: String): EmptyResult<DataError.Network> {

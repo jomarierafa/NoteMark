@@ -90,9 +90,12 @@ fun NoteListScreen(
             )
         },
         floatingActionButton = {
-            NMFloatingActionButton(onFabClick = {
-                onAction(NoteListAction.OnAddButtonClick)
-            })
+            NMFloatingActionButton(
+                isLoading = state.isAddingNote,
+                onFabClick = {
+                    onAction(NoteListAction.OnAddButtonClick)
+                }
+            )
         },
         modifier = Modifier.fillMaxSize()
     ) { innerPadding ->

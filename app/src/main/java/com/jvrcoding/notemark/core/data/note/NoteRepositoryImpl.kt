@@ -45,7 +45,7 @@ class NoteRepositoryImpl(
         }
 
         return applicationScope.async {
-            val remoteResult = remoteNoteDataSource.putNote(note = note)
+            val remoteResult = remoteNoteDataSource.postNote(note = note)
             if(remoteResult is Result.Error) {
                 return@async Result.Success(Unit)
             }

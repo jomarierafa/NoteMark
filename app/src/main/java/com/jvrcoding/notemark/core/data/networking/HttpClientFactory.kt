@@ -1,5 +1,6 @@
 package com.jvrcoding.notemark.core.data.networking
 
+import com.jvrcoding.notemark.BuildConfig
 import com.jvrcoding.notemark.core.domain.AuthInfo
 import com.jvrcoding.notemark.core.domain.SessionStorage
 import com.jvrcoding.notemark.core.domain.util.Result
@@ -43,7 +44,7 @@ class HttpClientFactory(
             }
             defaultRequest {
                 contentType(ContentType.Application.Json)
-                header("X-User-Email","jomarierafa1717@gmail.com")
+                header("X-User-Email", BuildConfig.USER_EMAIL)
             }
             install(Auth) {
                 bearer {

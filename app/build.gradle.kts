@@ -1,3 +1,5 @@
+import com.android.build.gradle.internal.cxx.configure.gradleLocalProperties
+
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
@@ -21,11 +23,14 @@ android {
     }
 
     buildTypes {
+        val userEmail = gradleLocalProperties(rootDir, providers).getProperty("USER_EMAIL")
         debug {
+            buildConfigField("String", "USER_EMAIL", "\"$userEmail\"")
             buildConfigField("String", "BASE_URL", "\"https://notemark.pl-coding.com\"")
         }
 
         release {
+            buildConfigField("String", "USER_EMAIL", "\"$userEmail\"")
             buildConfigField("String", "BASE_URL", "\"https://notemark.pl-coding.com\"")
 
             isMinifyEnabled = false
