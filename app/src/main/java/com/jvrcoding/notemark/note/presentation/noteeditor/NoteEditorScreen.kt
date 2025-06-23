@@ -157,7 +157,7 @@ fun NoteEditorScreen(
                         Text(
                             text = stringResource(R.string.note_title),
                             style = layoutConfig.titleTextStyle,
-                            color = MaterialTheme.colorScheme.onSurface
+                            color = MaterialTheme.colorScheme.onSurfaceVariant
                         )
                     },
                     modifier = Modifier

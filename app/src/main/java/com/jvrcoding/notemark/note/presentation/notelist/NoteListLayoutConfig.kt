@@ -24,7 +24,7 @@ fun rememberNoteListLayoutConfig(layoutType: DeviceLayoutType): NoteListLayoutCo
             titleTextStyle = MaterialTheme.typography.titleMedium,
             labelTextStyle = MaterialTheme.typography.bodySmall,
             contentPadding = PaddingValues(16.dp),
-            maxLabelChar = 50,
+            maxLabelChar = 150,
             toolBarPadding = PaddingValues(end = 16.dp)
         )
         DeviceLayoutType.LANDSCAPE -> NoteListLayoutConfig(
@@ -32,7 +32,7 @@ fun rememberNoteListLayoutConfig(layoutType: DeviceLayoutType): NoteListLayoutCo
             titleTextStyle = MaterialTheme.typography.titleMedium,
             labelTextStyle = MaterialTheme.typography.bodySmall,
             contentPadding = PaddingValues(start = 60.dp, top = 16.dp, end = 16.dp),
-            maxLabelChar = 50,
+            maxLabelChar = 150,
             toolBarPadding = PaddingValues(start = 45.dp, end = 8.dp)
         )
         DeviceLayoutType.TABLET -> NoteListLayoutConfig(
