@@ -1,7 +1,9 @@
 package com.jvrcoding.notemark
 
+import android.graphics.Color
 import android.os.Bundle
 import androidx.activity.ComponentActivity
+import androidx.activity.SystemBarStyle
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
@@ -22,7 +24,10 @@ class MainActivity : ComponentActivity() {
                 viewModel.state.isCheckingAuth
             }
         }
-        enableEdgeToEdge()
+
+        enableEdgeToEdge(
+            navigationBarStyle = SystemBarStyle.light(Color.TRANSPARENT, Color.TRANSPARENT)
+        )
         setContent {
             NoteMarkTheme(dynamicColor = false) {
                 if(!viewModel.state.isCheckingAuth) {

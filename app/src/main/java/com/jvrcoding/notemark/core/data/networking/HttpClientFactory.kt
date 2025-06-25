@@ -58,6 +58,10 @@ class HttpClientFactory(
                     refreshTokens {
                         val tokenPair =  sessionStorage.get()
 
+                        if (tokenPair == null || tokenPair.refreshToken.isBlank()) {
+                            return@refreshTokens null
+                        }
+
                         val response = client.post<RefreshTokenRequest, RefreshTokenResponse>(
                             route = "/api/auth/refresh",
                             body = RefreshTokenRequest(
