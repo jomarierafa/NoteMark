@@ -3,6 +3,7 @@ package com.jvrcoding.notemark.note.presentation.noteeditor
 import android.widget.Toast
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -19,6 +20,8 @@ import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -47,6 +50,9 @@ import com.jvrcoding.notemark.core.presentation.components.NMToolbar
 import com.jvrcoding.notemark.core.presentation.util.DeviceLayoutType
 import com.jvrcoding.notemark.core.presentation.util.ObserveAsEvents
 import com.jvrcoding.notemark.core.presentation.util.rememberDeviceLayoutType
+import com.jvrcoding.notemark.ui.theme.ChevronBackIcon
+import com.jvrcoding.notemark.ui.theme.CrossIcon
+import com.jvrcoding.notemark.ui.theme.ExtraSmallTitle
 import com.jvrcoding.notemark.ui.theme.NoteMarkTheme
 import kotlinx.coroutines.launch
 import org.koin.androidx.compose.koinViewModel
@@ -125,11 +131,23 @@ fun NoteEditorScreen(
                             MaterialTheme.colorScheme.surface
                     )
                     .padding(toolbarPAdding),
-                showBackButton = true,
-                title = "",
-                actionText = stringResource(R.string.save_note),
-                onBackClick = { onAction(NoteEditorAction.OnBackClick) },
-                onActionClick = { onAction(NoteEditorAction.OnSaveNoteClick) }
+                navigationIcon = {
+                    IconButton(onClick = { onAction(NoteEditorAction.OnBackClick) }) {
+                        Icon(
+                            imageVector = CrossIcon,
+                            contentDescription = stringResource(R.string.go_back),
+                        )
+                    }
+                },
+                actions = {
+                    Text(
+                        modifier = Modifier
+                            .clickable { onAction(NoteEditorAction.OnSaveNoteClick) },
+                        text = stringResource(R.string.save_note),
+                        color = MaterialTheme.colorScheme.primary,
+                        style = ExtraSmallTitle
+                    )
+                }
             )
         },
         modifier = Modifier.fillMaxSize()
@@ -145,6 +163,8 @@ fun NoteEditorScreen(
                 .verticalScroll(scrollState),
             contentAlignment = Alignment.TopCenter
         ) {
+            // TODO(add row (X, Column, Save note))
+
             Column(
                 modifier = layoutConfig.columnModifier
                     .wrapContentHeight(),

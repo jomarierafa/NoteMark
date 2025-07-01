@@ -16,6 +16,9 @@ object Register
 object NoteList
 
 @Serializable
+object Settings
+
+@Serializable
 data class NoteEditor(
     val id: NoteId = ""
 )

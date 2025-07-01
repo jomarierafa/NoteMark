@@ -19,7 +19,8 @@ class KtorRemoteNoteDataSource(
         return httpClient.get<NoteListDto>(
             route = "/api/notes",
             queryParameters = mapOf(
-                "page" to -1
+                "page" to -1,
+                "size" to 10
             )
         ).map { noteDto ->
             noteDto.notes.map { it.toNote() }

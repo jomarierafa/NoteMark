@@ -4,6 +4,7 @@ import com.jvrcoding.notemark.core.domain.note.NoteId
 
 
 sealed interface NoteListAction {
+    data object OnSettingsClick: NoteListAction
     data object OnAddButtonClick: NoteListAction
     data class OnTapNote(val id: NoteId): NoteListAction
     data class DeleteNote(val id: NoteId): NoteListAction

@@ -21,3 +21,15 @@ val EyeClosedIcon: ImageVector
 val CrossIcon: ImageVector
     @Composable
     get() = ImageVector.vectorResource(id = R.drawable.ic_cross)
+
+val SettingIcon: ImageVector
+    @Composable
+    get() = ImageVector.vectorResource(id = R.drawable.ic_setting)
+
+val LogoutIcon: ImageVector
+    @Composable
+    get() = ImageVector.vectorResource(id = R.drawable.ic_logout)
+
+val ChevronBackIcon: ImageVector
+    @Composable
+    get() = ImageVector.vectorResource(id = R.drawable.ic_chevron_back)
