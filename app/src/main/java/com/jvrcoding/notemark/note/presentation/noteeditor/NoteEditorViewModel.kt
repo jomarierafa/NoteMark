@@ -17,6 +17,8 @@ import java.time.ZoneId
 import java.time.ZonedDateTime
 import com.jvrcoding.notemark.core.domain.util.Result
 import com.jvrcoding.notemark.core.presentation.util.asUiText
+import com.jvrcoding.notemark.note.presentation.noteeditor.componets.FabOption
+import kotlinx.coroutines.delay
 
 class NoteEditorViewModel(
     private val noteRepository: NoteRepository
@@ -38,6 +40,14 @@ class NoteEditorViewModel(
                 state = state.copy(
                     selectedFabOption = action.option
                 )
+
+                if (action.option == FabOption.Book) {
+                    viewModelScope.launch {
+                        delay(100) // wait for screen rotate
+                        state = state.copy(isAdditionalUiVisible = false)
+                    }
+                }
+
             }
             is NoteEditorAction.GetNote -> {
                 getNote(action.id)

@@ -1,11 +1,19 @@
 package com.jvrcoding.notemark.note.presentation.noteeditor
 
+import android.app.Activity
+import android.content.pm.ActivityInfo
+import android.util.Log
 import android.widget.Toast
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -20,6 +28,8 @@ import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.FabPosition
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -36,6 +46,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.input.pointer.PointerEventPass
+import androidx.compose.ui.input.pointer.changedToUp
+import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.stringResource
@@ -49,8 +62,10 @@ import com.jvrcoding.notemark.core.presentation.components.NMCommonDialog
 import com.jvrcoding.notemark.core.presentation.components.NMToolbar
 import com.jvrcoding.notemark.core.presentation.util.DeviceLayoutType
 import com.jvrcoding.notemark.core.presentation.util.ObserveAsEvents
+import com.jvrcoding.notemark.core.presentation.util.formatWithJustNow
 import com.jvrcoding.notemark.core.presentation.util.rememberDeviceLayoutType
-import com.jvrcoding.notemark.ui.theme.ChevronBackIcon
+import com.jvrcoding.notemark.note.presentation.noteeditor.componets.CustomFloatingActionButton
+import com.jvrcoding.notemark.note.presentation.noteeditor.componets.DateDetails
 import com.jvrcoding.notemark.ui.theme.CrossIcon
 import com.jvrcoding.notemark.ui.theme.ExtraSmallTitle
 import com.jvrcoding.notemark.ui.theme.NoteMarkTheme
@@ -105,6 +120,7 @@ fun NoteEditorScreen(
 ) {
 
     val density = LocalDensity.current
+    val context = LocalContext.current
 
     val scrollState = rememberScrollState()
     val bringIntoViewRequester = remember { BringIntoViewRequester() }
@@ -116,48 +132,91 @@ fun NoteEditorScreen(
     val focusRequester = remember { FocusRequester() }
     LaunchedEffect(Unit) {
         onAction(NoteEditorAction.GetNote(id))
-        focusRequester.requestFocus()
+    }
+
+    LaunchedEffect(state.screenMode) {
+        val activity = context as? Activity ?: return@LaunchedEffect
+        when (state.screenMode) {
+            ScreenMode.READ -> {
+                activity.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE
+            }
+            ScreenMode.EDIT -> {
+                focusRequester.requestFocus()
+                activity.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED
+            }
+            else -> {
+                activity.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED
+            }
+        }
     }
 
     Scaffold(
-        containerColor =  MaterialTheme.colorScheme.surface,
+        containerColor = MaterialTheme.colorScheme.surface,
         topBar = {
-            NMToolbar(
-                modifier = Modifier
-                    .background(
-                        if(layoutType == DeviceLayoutType.LANDSCAPE)
-                            Color.Transparent
-                        else
-                            MaterialTheme.colorScheme.surface
-                    )
-                    .padding(toolbarPAdding),
-                navigationIcon = {
-                    IconButton(onClick = { onAction(NoteEditorAction.OnBackClick) }) {
-                        Icon(
-                            imageVector = CrossIcon,
-                            contentDescription = stringResource(R.string.go_back),
+            AnimatedVisibility(
+                visible = state.isAdditionalUiVisible,
+                enter = fadeIn(animationSpec = tween(durationMillis = 1000)),
+                exit = fadeOut(animationSpec = tween(durationMillis = 1000))
+            ) {
+                NMToolbar(
+                    modifier = Modifier
+                        .background(
+                            if (layoutType == DeviceLayoutType.LANDSCAPE)
+                                Color.Transparent
+                            else
+                                MaterialTheme.colorScheme.surface
+                        )
+                        .padding(toolbarPAdding),
+                    navigationIcon = {
+                        IconButton(onClick = { onAction(NoteEditorAction.OnBackClick) }) {
+                            Icon(
+                                imageVector = CrossIcon,
+                                contentDescription = stringResource(R.string.go_back),
+                            )
+                        }
+                    },
+                    actions = {
+                        Text(
+                            modifier = Modifier
+                                .clickable { onAction(NoteEditorAction.OnSaveNoteClick) },
+                            text = stringResource(R.string.save_note),
+                            color = MaterialTheme.colorScheme.primary,
+                            style = ExtraSmallTitle
                         )
                     }
-                },
-                actions = {
-                    Text(
-                        modifier = Modifier
-                            .clickable { onAction(NoteEditorAction.OnSaveNoteClick) },
-                        text = stringResource(R.string.save_note),
-                        color = MaterialTheme.colorScheme.primary,
-                        style = ExtraSmallTitle
-                    )
-                }
-            )
+                )
+            }
         },
+        floatingActionButton = {
+            AnimatedVisibility(
+                visible = state.isAdditionalUiVisible,
+                enter = fadeIn(animationSpec = tween(durationMillis = 1000)),
+                exit = fadeOut(animationSpec = tween(durationMillis = 1000))
+            ) {
+                CustomFloatingActionButton(
+                    selected = state.selectedFabOption,
+                    onOptionSelected = { onAction(NoteEditorAction.OnSelectFabOption(it)) }
+                )
+            }
+        },
+        floatingActionButtonPosition = FabPosition.Center,
         modifier = Modifier.fillMaxSize()
-
     ) { innerPadding ->
         val layoutConfig = rememberNoteEditorLayoutConfig(layoutType, innerPadding)
 
         Box(
             modifier = Modifier
 //                .zIndex(layoutConfig.boxZIndex)
+                .pointerInput(Unit) {
+                    awaitPointerEventScope {
+                        while (true) {
+                            val event = awaitPointerEvent(PointerEventPass.Initial)
+                            if (event.changes.any { it.changedToUp() }) {
+                                Log.d("awit", "Box clicked")
+                            }
+                        }
+                    }
+                }
                 .fillMaxSize()
                 .imePadding()
                 .verticalScroll(scrollState),
@@ -170,6 +229,7 @@ fun NoteEditorScreen(
                     .wrapContentHeight(),
             ) {
                 TextField(
+                    readOnly = state.screenMode !=  ScreenMode.EDIT,
                     value = state.title,
                     textStyle = layoutConfig.titleTextStyle,
                     onValueChange = { onAction(NoteEditorAction.OnTitleChanged(it)) },
@@ -200,9 +260,35 @@ fun NoteEditorScreen(
 
                 )
 
-                Spacer(modifier = Modifier.height(16.dp))
+                if(state.screenMode != ScreenMode.EDIT) {
+                    Row(
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .padding(
+                                horizontal = 16.dp,
+                                vertical = 20.dp
+                            )
+                    ) {
+                        DateDetails(
+                            modifier = Modifier
+                                .weight(1f),
+                            label = stringResource(R.string.date_created),
+                            value = state.dateCreated.formatWithJustNow()
+                        )
+                        DateDetails(
+                            modifier = Modifier
+                                .weight(1f),
+                            label = stringResource(R.string.last_edited),
+                            value = state.lastEdited.formatWithJustNow()
+                        )
+                    }
+                    HorizontalDivider(thickness = 0.5.dp)
+                }
+
+                Spacer(modifier = Modifier.height(12.dp))
 
                 BasicTextField(
+                    readOnly = state.screenMode !=  ScreenMode.EDIT,
                     value = state.content,
                     onValueChange = { onAction(NoteEditorAction.OnContentChanged(it)) },
                     modifier = Modifier

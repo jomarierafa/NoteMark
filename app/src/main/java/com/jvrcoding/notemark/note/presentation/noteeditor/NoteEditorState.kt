@@ -13,7 +13,8 @@ data class NoteEditorState(
     val lastEdited: ZonedDateTime = ZonedDateTime.now(),
     val isSavingNote: Boolean = false,
     val showDiscardDialog: Boolean = false,
-    val selectedFabOption: FabOption? = null
+    val selectedFabOption: FabOption? = null,
+    val isAdditionalUiVisible: Boolean = true
 ) {
     val screenMode: ScreenMode
         get() = when (selectedFabOption) {
