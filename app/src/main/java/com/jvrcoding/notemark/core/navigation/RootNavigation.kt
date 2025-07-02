@@ -12,6 +12,7 @@ import com.jvrcoding.notemark.auth.presentation.login.LoginScreenRoot
 import com.jvrcoding.notemark.auth.presentation.register.RegisterScreenRoot
 import com.jvrcoding.notemark.note.presentation.noteeditor.NoteEditorScreenRoot
 import com.jvrcoding.notemark.note.presentation.notelist.NoteListScreenRoot
+import com.jvrcoding.notemark.settings.presentation.SettingsScreenRoot
 
 @Composable
 fun NavigationRoot(
@@ -108,6 +109,9 @@ private fun NavGraphBuilder.homeGraph(
     ) {
         composable<NoteList> {
             NoteListScreenRoot(
+                onSettingsClick = {
+                    navController.navigate(Settings)
+                },
                 onTapNote = { noteId ->
                     navController.navigate(
                         NoteEditor(id = noteId)
@@ -133,6 +137,21 @@ private fun NavGraphBuilder.homeGraph(
                 },
                 onDiscardChanges = {
                     navController.navigateUp()
+                }
+            )
+        }
+
+        composable<Settings> {
+            SettingsScreenRoot(
+                onBackClick = {
+                    navController.navigateUp()
+                },
+                onLogoutClick =  {
+                    navController.navigate(Login) {
+                        popUpTo(HomeGraph) {
+                            inclusive = true
+                        }
+                    }
                 }
             )
         }

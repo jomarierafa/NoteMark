@@ -25,6 +25,9 @@ import com.jvrcoding.notemark.core.domain.note.RemoteNoteDataSource
 import com.jvrcoding.notemark.note.data.KtorRemoteNoteDataSource
 import com.jvrcoding.notemark.note.presentation.noteeditor.NoteEditorViewModel
 import com.jvrcoding.notemark.note.presentation.notelist.NoteListViewModel
+import com.jvrcoding.notemark.settings.data.SettingsRepositoryImpl
+import com.jvrcoding.notemark.settings.domain.SettingsRepository
+import com.jvrcoding.notemark.settings.presentation.SettingsViewModel
 import kotlinx.coroutines.CoroutineScope
 import org.koin.android.ext.koin.androidApplication
 import org.koin.androidx.viewmodel.dsl.viewModelOf
@@ -60,6 +63,7 @@ val appModule = module {
     singleOf(::UserDataValidator)
     singleOf(::AuthRepositoryImpl).bind<AuthRepository>()
     singleOf(::NoteRepositoryImpl).bind<NoteRepository>()
+    singleOf(::SettingsRepositoryImpl).bind<SettingsRepository>()
 
     //database
     single {
@@ -83,4 +87,5 @@ val appModule = module {
     viewModelOf(::LoginViewModel)
     viewModelOf(::NoteListViewModel)
     viewModelOf(::NoteEditorViewModel)
+    viewModelOf(::SettingsViewModel)
 }

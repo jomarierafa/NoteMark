@@ -9,15 +9,21 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.staggeredgrid.LazyVerticalStaggeredGrid
 import androidx.compose.foundation.lazy.staggeredgrid.StaggeredGridCells
 import androidx.compose.foundation.lazy.staggeredgrid.items
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
@@ -34,10 +40,12 @@ import com.jvrcoding.notemark.core.presentation.util.getInitials
 import com.jvrcoding.notemark.core.presentation.util.rememberDeviceLayoutType
 import com.jvrcoding.notemark.note.presentation.notelist.components.NoteListItem
 import com.jvrcoding.notemark.ui.theme.NoteMarkTheme
+import com.jvrcoding.notemark.ui.theme.SettingIcon
 import org.koin.androidx.compose.koinViewModel
 
 @Composable
 fun NoteListScreenRoot(
+    onSettingsClick: () -> Unit,
     onSuccessfulAdd: (NoteId) -> Unit,
     onTapNote: (NoteId) -> Unit,
     viewModel: NoteListViewModel = koinViewModel()
@@ -60,6 +68,7 @@ fun NoteListScreenRoot(
         state = viewModel.state,
         onAction = { action ->
             when (action) {
+                NoteListAction.OnSettingsClick -> onSettingsClick()
                 is NoteListAction.OnTapNote -> onTapNote(action.id)
                 else -> Unit
             }
@@ -84,9 +93,29 @@ fun NoteListScreen(
                 modifier = Modifier
                     .background(MaterialTheme.colorScheme.surfaceContainerLowest)
                     .padding(layoutConfig.toolBarPadding),
-                showBackButton = false,
+                navigationIcon = {},
                 title = stringResource(R.string.notemark),
-                nameInitial = state.username.getInitials(),
+                actions = {
+                    IconButton(onClick = { onAction(NoteListAction.OnSettingsClick) }) {
+                        Icon(
+                            imageVector = SettingIcon,
+                            contentDescription = stringResource(R.string.go_back),
+                        )
+                    }
+                    Box(
+                        modifier = Modifier
+                            .size(40.dp)
+                            .clip(RoundedCornerShape(12.dp))
+                            .background(MaterialTheme.colorScheme.primary),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Text(
+                            text = state.username.getInitials(),
+                            color = MaterialTheme.colorScheme.onPrimary,
+                            style = MaterialTheme.typography.titleSmall
+                        )
+                    }
+                }
             )
         },
         floatingActionButton = {
