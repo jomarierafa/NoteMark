@@ -45,4 +45,6 @@
     <string name="discard_dialog_message">You have unsaved changes. If you discard now, all changes will be lost.</string>
     <string name="discard">Discard</string>
     <string name="keep_editing">Keep Editing</string>
+    <string name="date_created">Date created</string>
+    <string name="last_edited">Last edited</string>
 </resources>

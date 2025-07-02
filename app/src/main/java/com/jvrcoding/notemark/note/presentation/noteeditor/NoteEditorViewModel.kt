@@ -34,6 +34,11 @@ class NoteEditorViewModel(
 
     fun onAction(action: NoteEditorAction) {
         when (action) {
+            is NoteEditorAction.OnSelectFabOption -> {
+                state = state.copy(
+                    selectedFabOption = action.option
+                )
+            }
             is NoteEditorAction.GetNote -> {
                 getNote(action.id)
             }
@@ -79,6 +84,8 @@ class NoteEditorViewModel(
                         text = note.title,
                         selection = TextRange(note.title.length)
                     ),
+                    dateCreated = note.createdAt,
+                    lastEdited = note.lastEditedAt,
                     content = TextFieldValue(text = note.content)
                 )
                 initialTitleValue = note.title
@@ -94,8 +101,7 @@ class NoteEditorViewModel(
                 id = id,
                 title = state.title.text,
                 content = state.content.text,
-                createdAt = ZonedDateTime.now()
-                    .withZoneSameInstant(ZoneId.of("UTC")),
+                createdAt = state.dateCreated,
                 lastEditedAt = ZonedDateTime.now()
                     .withZoneSameInstant(ZoneId.of("UTC"))
             )
@@ -104,7 +110,6 @@ class NoteEditorViewModel(
                 is Result.Error -> {
                     eventChannel.send(NoteEditorEvent.Error(result.error.asUiText()))
                 }
-
                 is Result.Success -> {
                     eventChannel.send(NoteEditorEvent.NoteSaved)
                 }
