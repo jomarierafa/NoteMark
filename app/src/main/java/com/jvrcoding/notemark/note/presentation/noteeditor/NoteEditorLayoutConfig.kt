@@ -6,7 +6,6 @@ import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.safeDrawing
-import androidx.compose.foundation.layout.width
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -27,7 +26,7 @@ data class NoteEditorLayoutConfig(
 fun rememberToolbarPadding(layoutType: DeviceLayoutType): PaddingValues {
     return when (layoutType) {
         DeviceLayoutType.PORTRAIT ->  PaddingValues(end = 16.dp)
-        DeviceLayoutType.LANDSCAPE -> PaddingValues(start = 45.dp, end = 8.dp)
+        DeviceLayoutType.LANDSCAPE -> PaddingValues(start = 35.dp, end = 8.dp)
         DeviceLayoutType.TABLET -> PaddingValues(start = 16.dp, end = 24.dp)
     }
 }
@@ -50,7 +49,7 @@ fun rememberNoteEditorLayoutConfig(
         DeviceLayoutType.LANDSCAPE -> NoteEditorLayoutConfig(
             boxZIndex = 1f,
             columnModifier = Modifier
-                .width(540.dp)
+                .fillMaxWidth(0.57f)
                 .padding(top = WindowInsets.safeDrawing.asPaddingValues().calculateTopPadding())
             ,
             titleTextStyle = MaterialTheme.typography.titleLarge,

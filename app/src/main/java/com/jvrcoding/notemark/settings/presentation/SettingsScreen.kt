@@ -23,6 +23,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.jvrcoding.notemark.R
 import com.jvrcoding.notemark.core.presentation.components.NMToolbar
+import com.jvrcoding.notemark.ui.theme.ExtraSmallTitle
 import com.jvrcoding.notemark.ui.theme.LogoutIcon
 import com.jvrcoding.notemark.ui.theme.NoteMarkTheme
 import org.koin.androidx.compose.koinViewModel
@@ -54,6 +55,7 @@ fun SettingsScreen(
         topBar = {
             NMToolbar(
                 showNavigationIcon = true,
+                titleStyle = ExtraSmallTitle,
                 modifier = Modifier
                     .background(MaterialTheme.colorScheme.surface)
                     .padding(),

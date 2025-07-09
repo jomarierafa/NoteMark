@@ -20,5 +20,6 @@ object Settings
 
 @Serializable
 data class NoteEditor(
-    val id: NoteId = ""
+    val id: NoteId = "",
+    val isNewNote: Boolean = false,
 )

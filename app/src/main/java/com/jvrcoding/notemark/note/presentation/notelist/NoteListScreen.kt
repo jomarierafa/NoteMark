@@ -95,6 +95,7 @@ fun NoteListScreen(
                     .background(MaterialTheme.colorScheme.surfaceContainerLowest)
                     .padding(layoutConfig.toolBarPadding),
                 title = stringResource(R.string.notemark),
+                titleColor = MaterialTheme.colorScheme.onSurface,
                 actions = {
                     IconButton(onClick = { onAction(NoteListAction.OnSettingsClick) }) {
                         Icon(

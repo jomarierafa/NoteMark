@@ -14,6 +14,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.tooling.preview.Preview
 import com.jvrcoding.notemark.R
 import com.jvrcoding.notemark.ui.theme.ChevronBackIcon
@@ -27,6 +28,7 @@ fun NMToolbar(
     modifier: Modifier = Modifier,
     title: String = "",
     titleColor: Color = MaterialTheme.colorScheme.onSurfaceVariant,
+    titleStyle: TextStyle = MaterialTheme.typography.titleMedium,
     onNavIconClick: () -> Unit = {},
     scrollBehaviour: TopAppBarScrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior(),
     isEditMode: Boolean = false,
@@ -37,7 +39,7 @@ fun NMToolbar(
             Text(
                 text = title,
                 color = titleColor,
-                style = MaterialTheme.typography.titleMedium
+                style = titleStyle
             )
         },
         modifier = modifier,

@@ -43,9 +43,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.input.pointer.PointerEventPass
-import androidx.compose.ui.input.pointer.changedToUp
-import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.stringResource
@@ -54,7 +51,6 @@ import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.jvrcoding.notemark.R
-import com.jvrcoding.notemark.core.domain.note.NoteId
 import com.jvrcoding.notemark.core.presentation.components.NMCommonDialog
 import com.jvrcoding.notemark.core.presentation.components.NMToolbar
 import com.jvrcoding.notemark.core.presentation.util.DeviceLayoutType
@@ -68,11 +64,9 @@ import com.jvrcoding.notemark.ui.theme.ExtraSmallTitle
 import com.jvrcoding.notemark.ui.theme.NoteMarkTheme
 import kotlinx.coroutines.launch
 import org.koin.androidx.compose.koinViewModel
-import timber.log.Timber
 
 @Composable
 fun NoteEditorScreenRoot(
-    id: NoteId,
     onSuccessfulDelete: () -> Unit,
     onSuccessfulSave: () -> Unit,
     onDiscardChanges: () -> Unit,
@@ -91,11 +85,14 @@ fun NoteEditorScreenRoot(
             }
             NoteEditorEvent.NoteSaved -> onSuccessfulSave()
             NoteEditorEvent.NoteDeleted -> onSuccessfulDelete()
-            NoteEditorEvent.DiscardChanges -> onDiscardChanges()
+            NoteEditorEvent.ExitScreen -> {
+                val activity = context as? Activity
+                activity?.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED
+                onDiscardChanges()
+            }
         }
     }
     NoteEditorScreen(
-        id = id,
         state = viewModel.state,
         onAction = viewModel::onAction
     )
@@ -105,7 +102,6 @@ fun NoteEditorScreenRoot(
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class)
 @Composable
 fun NoteEditorScreen(
-    id: NoteId,
     state: NoteEditorState,
     onAction: (NoteEditorAction) -> Unit
 ) {
@@ -121,9 +117,6 @@ fun NoteEditorScreen(
     val toolbarPAdding = rememberToolbarPadding(layoutType)
 
     val focusRequester = remember { FocusRequester() }
-    LaunchedEffect(Unit) {
-        onAction(NoteEditorAction.GetNote(id))
-    }
 
     LaunchedEffect(state.screenMode) {
         val activity = context as? Activity ?: return@LaunchedEffect
@@ -152,6 +145,7 @@ fun NoteEditorScreen(
                 NMToolbar(
                     showNavigationIcon = true,
                     title = state.screenTitle,
+                    titleStyle = ExtraSmallTitle,
                     modifier = Modifier
                         .background(
                             if (layoutType == DeviceLayoutType.LANDSCAPE)
@@ -203,7 +197,7 @@ fun NoteEditorScreen(
                         onAction(NoteEditorAction.OnSurfaceTap)
                     },
                     onScroll = {
-                        Timber.d("awit2")
+                        onAction(NoteEditorAction.OnStartScrolling)
                     }
                 )
                 .fillMaxSize()
@@ -348,7 +342,6 @@ fun NoteEditorScreen(
 private fun NoteEditorScreenPreview() {
     NoteMarkTheme {
         NoteEditorScreen(
-            id = "",
             state = NoteEditorState(),
             onAction = {},
         )
@@ -362,7 +355,6 @@ private fun NoteEditorScreenPreview() {
 private fun NoteEditorScreenLandscapePreview() {
     NoteMarkTheme {
         NoteEditorScreen(
-            id = "",
             state = NoteEditorState(),
             onAction = {}
         )
@@ -380,7 +372,6 @@ private fun NoteEditorScreenLandscapePreview() {
 private fun NoteEditorScreenTabletPreview() {
     NoteMarkTheme {
         NoteEditorScreen(
-            id = "",
             state = NoteEditorState(),
             onAction = {}
         )

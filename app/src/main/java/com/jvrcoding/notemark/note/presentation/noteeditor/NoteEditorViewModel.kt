@@ -5,6 +5,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.text.TextRange
 import androidx.compose.ui.text.input.TextFieldValue
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.jvrcoding.notemark.core.domain.note.Note
@@ -18,10 +19,12 @@ import java.time.ZonedDateTime
 import com.jvrcoding.notemark.core.domain.util.Result
 import com.jvrcoding.notemark.core.presentation.util.asUiText
 import com.jvrcoding.notemark.note.presentation.noteeditor.componets.FabOption
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 
 class NoteEditorViewModel(
-    private val noteRepository: NoteRepository
+    private val noteRepository: NoteRepository,
+    savedStateHandle: SavedStateHandle
 ) : ViewModel() {
 
     var state by mutableStateOf(NoteEditorState())
@@ -33,6 +36,18 @@ class NoteEditorViewModel(
     private var initialTitleValue: String = ""
     private var initialContentValue: String = ""
 
+    private var hideJob: Job? = null
+
+    private val noteId: String = savedStateHandle["id"] ?: ""
+    private val isNewNote: Boolean = savedStateHandle["isNewNote"] ?: false
+
+    init {
+        state = state.copy(
+            selectedFabOption = if(isNewNote)  FabOption.Pen else null,
+            isAdditionalUiVisible = !isNewNote
+        )
+        getNote(noteId)
+    }
 
     fun onAction(action: NoteEditorAction) {
         when (action) {
@@ -42,22 +57,17 @@ class NoteEditorViewModel(
                     selectedFabOption = option
                 )
 
-
-
                 if (option != null) {
                     viewModelScope.launch {
                         if(option == FabOption.Book)
-                            delay(300) // wait for screen rotate
+                            delay(5000)
 
                         state = state.copy(isAdditionalUiVisible = false)
                     }
                 }
 
             }
-            is NoteEditorAction.GetNote -> {
-                getNote(action.id)
-            }
-            is NoteEditorAction.OnSaveNoteClick -> {
+            NoteEditorAction.OnSaveNoteClick -> {
                 saveNote(state.id)
             }
             is NoteEditorAction.OnTitleChanged -> {
@@ -70,18 +80,24 @@ class NoteEditorViewModel(
                 handleNavIconClick()
             }
             NoteEditorAction.OnDiscardClick -> {
-                viewModelScope.launch {
-                    state = state.copy(showDiscardDialog = false)
-                    eventChannel.send(NoteEditorEvent.DiscardChanges)
-                }
+                state = state.copy(
+                    showDiscardDialog = false,
+                    selectedFabOption = null,
+                    isAdditionalUiVisible = true
+                )
             }
             NoteEditorAction.OnKeepEditingClick -> {
                 state = state.copy(showDiscardDialog = false)
             }
-
             NoteEditorAction.OnSurfaceTap -> {
                 if(state.screenMode == ScreenMode.READ) {
                     state = state.copy(isAdditionalUiVisible = !state.isAdditionalUiVisible)
+                    startHideTimer()
+                }
+            }
+            NoteEditorAction.OnStartScrolling -> {
+                if(state.screenMode == ScreenMode.READ) {
+                    state = state.copy(isAdditionalUiVisible = false)
                 }
             }
         }
@@ -123,7 +139,11 @@ class NoteEditorViewModel(
                     eventChannel.send(NoteEditorEvent.Error(result.error.asUiText()))
                 }
                 is Result.Success -> {
-                    eventChannel.send(NoteEditorEvent.NoteSaved)
+                    state = state.copy(
+                        selectedFabOption = null,
+                        isAdditionalUiVisible = true,
+                        lastEdited = ZonedDateTime.now()
+                    )
                 }
             }
 
@@ -133,23 +153,32 @@ class NoteEditorViewModel(
 
     private fun handleNavIconClick() {
         if(state.screenMode == ScreenMode.EDIT) {
-            state = state.copy(
-                selectedFabOption = null,
-                isAdditionalUiVisible = true
-            )
+            state = if(initialTitleValue == state.title.text
+                && initialContentValue == state.content.text
+            ) {
+                state.copy(
+                    selectedFabOption = null,
+                    isAdditionalUiVisible = true
+                )
+            } else {
+                state.copy(showDiscardDialog = true)
+            }
             return
         }
 
         viewModelScope.launch {
-            if(initialTitleValue == state.title.text
-                && initialContentValue == state.content.text
-            ) {
-                eventChannel.send(NoteEditorEvent.DiscardChanges)
-//                        noteRepository.deleteNote(state.id)
-            } else {
-                state = state.copy(showDiscardDialog = true)
-            }
+            // TODO(reusing DiscardChanges for exiting the note detail screen XD)
+            eventChannel.send(NoteEditorEvent.ExitScreen)
         }
     }
 
+
+    private fun startHideTimer() {
+        hideJob?.cancel()
+        hideJob = null
+        hideJob = viewModelScope.launch {
+            delay(5000)
+            state = state.copy(isAdditionalUiVisible = false)
+        }
+    }
 }
