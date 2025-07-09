@@ -37,13 +37,18 @@ class NoteEditorViewModel(
     fun onAction(action: NoteEditorAction) {
         when (action) {
             is NoteEditorAction.OnSelectFabOption -> {
+                val option = action.option
                 state = state.copy(
-                    selectedFabOption = action.option
+                    selectedFabOption = option
                 )
 
-                if (action.option == FabOption.Book) {
+
+
+                if (option != null) {
                     viewModelScope.launch {
-                        delay(100) // wait for screen rotate
+                        if(option == FabOption.Book)
+                            delay(300) // wait for screen rotate
+
                         state = state.copy(isAdditionalUiVisible = false)
                     }
                 }
@@ -61,17 +66,8 @@ class NoteEditorViewModel(
             is NoteEditorAction.OnContentChanged -> {
                 state = state.copy(content = action.value)
             }
-            is NoteEditorAction.OnBackClick -> {
-                viewModelScope.launch {
-                    if(initialTitleValue == state.title.text
-                        && initialContentValue == state.content.text
-                    ) {
-                        eventChannel.send(NoteEditorEvent.DiscardChanges)
-//                        noteRepository.deleteNote(state.id)
-                    } else {
-                        state = state.copy(showDiscardDialog = true)
-                    }
-                }
+            NoteEditorAction.OnNavIconClick -> {
+                handleNavIconClick()
             }
             NoteEditorAction.OnDiscardClick -> {
                 viewModelScope.launch {
@@ -81,6 +77,12 @@ class NoteEditorViewModel(
             }
             NoteEditorAction.OnKeepEditingClick -> {
                 state = state.copy(showDiscardDialog = false)
+            }
+
+            NoteEditorAction.OnSurfaceTap -> {
+                if(state.screenMode == ScreenMode.READ) {
+                    state = state.copy(isAdditionalUiVisible = !state.isAdditionalUiVisible)
+                }
             }
         }
     }
@@ -129,8 +131,25 @@ class NoteEditorViewModel(
         }
     }
 
-    private fun navigateBack() {
+    private fun handleNavIconClick() {
+        if(state.screenMode == ScreenMode.EDIT) {
+            state = state.copy(
+                selectedFabOption = null,
+                isAdditionalUiVisible = true
+            )
+            return
+        }
 
+        viewModelScope.launch {
+            if(initialTitleValue == state.title.text
+                && initialContentValue == state.content.text
+            ) {
+                eventChannel.send(NoteEditorEvent.DiscardChanges)
+//                        noteRepository.deleteNote(state.id)
+            } else {
+                state = state.copy(showDiscardDialog = true)
+            }
+        }
     }
 
 }

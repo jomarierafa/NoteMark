@@ -53,11 +53,12 @@ fun SettingsScreen(
         containerColor =  MaterialTheme.colorScheme.surface,
         topBar = {
             NMToolbar(
+                showNavigationIcon = true,
                 modifier = Modifier
                     .background(MaterialTheme.colorScheme.surface)
                     .padding(),
                 title = stringResource(R.string.settings),
-                onBackClick = { onAction(SettingsAction.OnBackClick) },
+                onNavIconClick = { onAction(SettingsAction.OnBackClick) },
             )
         },
         modifier = Modifier.fillMaxSize()

@@ -90,10 +90,10 @@ fun NoteListScreen(
     Scaffold(
         topBar = {
             NMToolbar(
+                showNavigationIcon = false,
                 modifier = Modifier
                     .background(MaterialTheme.colorScheme.surfaceContainerLowest)
                     .padding(layoutConfig.toolBarPadding),
-                navigationIcon = {},
                 title = stringResource(R.string.notemark),
                 actions = {
                     IconButton(onClick = { onAction(NoteListAction.OnSettingsClick) }) {

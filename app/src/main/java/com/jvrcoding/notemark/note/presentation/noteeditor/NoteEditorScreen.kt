@@ -2,7 +2,6 @@ package com.jvrcoding.notemark.note.presentation.noteeditor
 
 import android.app.Activity
 import android.content.pm.ActivityInfo
-import android.util.Log
 import android.widget.Toast
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.tween
@@ -30,8 +29,6 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FabPosition
 import androidx.compose.material3.HorizontalDivider
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -62,15 +59,16 @@ import com.jvrcoding.notemark.core.presentation.components.NMCommonDialog
 import com.jvrcoding.notemark.core.presentation.components.NMToolbar
 import com.jvrcoding.notemark.core.presentation.util.DeviceLayoutType
 import com.jvrcoding.notemark.core.presentation.util.ObserveAsEvents
+import com.jvrcoding.notemark.core.presentation.util.customTouch
 import com.jvrcoding.notemark.core.presentation.util.formatWithJustNow
 import com.jvrcoding.notemark.core.presentation.util.rememberDeviceLayoutType
 import com.jvrcoding.notemark.note.presentation.noteeditor.componets.CustomFloatingActionButton
 import com.jvrcoding.notemark.note.presentation.noteeditor.componets.DateDetails
-import com.jvrcoding.notemark.ui.theme.CrossIcon
 import com.jvrcoding.notemark.ui.theme.ExtraSmallTitle
 import com.jvrcoding.notemark.ui.theme.NoteMarkTheme
 import kotlinx.coroutines.launch
 import org.koin.androidx.compose.koinViewModel
+import timber.log.Timber
 
 @Composable
 fun NoteEditorScreenRoot(
@@ -100,13 +98,6 @@ fun NoteEditorScreenRoot(
         id = id,
         state = viewModel.state,
         onAction = viewModel::onAction
-//            { action ->
-//            when (action) {
-//                NoteEditorAction.OnBackClick -> onBackClick()
-//                else -> Unit
-//            }
-//            viewModel.onAction(action)
-//        }
     )
 
 }
@@ -154,11 +145,13 @@ fun NoteEditorScreen(
         containerColor = MaterialTheme.colorScheme.surface,
         topBar = {
             AnimatedVisibility(
-                visible = state.isAdditionalUiVisible,
-                enter = fadeIn(animationSpec = tween(durationMillis = 1000)),
-                exit = fadeOut(animationSpec = tween(durationMillis = 1000))
+                visible = state.isNavBarVisible,
+                enter = fadeIn(animationSpec = tween(durationMillis = 2000)),
+                exit = fadeOut(animationSpec = tween(durationMillis = 2000))
             ) {
                 NMToolbar(
+                    showNavigationIcon = true,
+                    title = state.screenTitle,
                     modifier = Modifier
                         .background(
                             if (layoutType == DeviceLayoutType.LANDSCAPE)
@@ -167,22 +160,20 @@ fun NoteEditorScreen(
                                 MaterialTheme.colorScheme.surface
                         )
                         .padding(toolbarPAdding),
-                    navigationIcon = {
-                        IconButton(onClick = { onAction(NoteEditorAction.OnBackClick) }) {
-                            Icon(
-                                imageVector = CrossIcon,
-                                contentDescription = stringResource(R.string.go_back),
-                            )
-                        }
+                    isEditMode = state.screenMode == ScreenMode.EDIT,
+                    onNavIconClick = {
+                        onAction(NoteEditorAction.OnNavIconClick)
                     },
                     actions = {
-                        Text(
-                            modifier = Modifier
-                                .clickable { onAction(NoteEditorAction.OnSaveNoteClick) },
-                            text = stringResource(R.string.save_note),
-                            color = MaterialTheme.colorScheme.primary,
-                            style = ExtraSmallTitle
-                        )
+                        if(state.screenMode == ScreenMode.EDIT) {
+                            Text(
+                                modifier = Modifier
+                                    .clickable { onAction(NoteEditorAction.OnSaveNoteClick) },
+                                text = stringResource(R.string.save_note),
+                                color = MaterialTheme.colorScheme.primary,
+                                style = ExtraSmallTitle
+                            )
+                        }
                     }
                 )
             }
@@ -190,8 +181,8 @@ fun NoteEditorScreen(
         floatingActionButton = {
             AnimatedVisibility(
                 visible = state.isAdditionalUiVisible,
-                enter = fadeIn(animationSpec = tween(durationMillis = 1000)),
-                exit = fadeOut(animationSpec = tween(durationMillis = 1000))
+                enter = fadeIn(animationSpec = tween(durationMillis = 2000)),
+                exit = fadeOut(animationSpec = tween(durationMillis = 2000))
             ) {
                 CustomFloatingActionButton(
                     selected = state.selectedFabOption,
@@ -207,16 +198,14 @@ fun NoteEditorScreen(
         Box(
             modifier = Modifier
 //                .zIndex(layoutConfig.boxZIndex)
-                .pointerInput(Unit) {
-                    awaitPointerEventScope {
-                        while (true) {
-                            val event = awaitPointerEvent(PointerEventPass.Initial)
-                            if (event.changes.any { it.changedToUp() }) {
-                                Log.d("awit", "Box clicked")
-                            }
-                        }
+                .customTouch(
+                    onTap = {
+                        onAction(NoteEditorAction.OnSurfaceTap)
+                    },
+                    onScroll = {
+                        Timber.d("awit2")
                     }
-                }
+                )
                 .fillMaxSize()
                 .imePadding()
                 .verticalScroll(scrollState),

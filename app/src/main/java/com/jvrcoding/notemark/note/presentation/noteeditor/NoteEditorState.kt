@@ -22,4 +22,14 @@ data class NoteEditorState(
             FabOption.Book -> ScreenMode.READ
             null -> ScreenMode.VIEW
         }
+
+    val screenTitle: String
+        get() = when (selectedFabOption) {
+            FabOption.Pen -> ""
+            else -> "ALL NOTES"
+        }
+
+    val isNavBarVisible: Boolean
+        get() = isAdditionalUiVisible || screenMode == ScreenMode.EDIT
+
 }
