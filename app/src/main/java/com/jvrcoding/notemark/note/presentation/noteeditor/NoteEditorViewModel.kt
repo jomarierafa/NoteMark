@@ -53,17 +53,22 @@ class NoteEditorViewModel(
         when (action) {
             is NoteEditorAction.OnSelectFabOption -> {
                 val option = action.option
-                state = state.copy(
-                    selectedFabOption = option
-                )
+                if(option == state.selectedFabOption) {
+                    cancelHideJob()
+                    state = state.copy(
+                        selectedFabOption = null,
+                        isAdditionalUiVisible = true
+                    )
+                    return
+                }
+
+                state = state.copy(selectedFabOption = option)
 
                 if (option != null) {
-                    viewModelScope.launch {
-                        if(option == FabOption.Book)
-                            delay(5000)
-
+                    if(option == FabOption.Book)
+                        startHideTimer()
+                    else
                         state = state.copy(isAdditionalUiVisible = false)
-                    }
                 }
 
             }
@@ -139,6 +144,8 @@ class NoteEditorViewModel(
                     eventChannel.send(NoteEditorEvent.Error(result.error.asUiText()))
                 }
                 is Result.Success -> {
+                    initialTitleValue =  state.title.text
+                    initialContentValue = state.content.text
                     state = state.copy(
                         selectedFabOption = null,
                         isAdditionalUiVisible = true,
@@ -153,8 +160,8 @@ class NoteEditorViewModel(
 
     private fun handleNavIconClick() {
         if(state.screenMode == ScreenMode.EDIT) {
-            state = if(initialTitleValue == state.title.text
-                && initialContentValue == state.content.text
+            state = if(initialTitleValue == state.title.text &&
+                initialContentValue == state.content.text
             ) {
                 state.copy(
                     selectedFabOption = null,
@@ -174,11 +181,15 @@ class NoteEditorViewModel(
 
 
     private fun startHideTimer() {
-        hideJob?.cancel()
-        hideJob = null
+        cancelHideJob()
         hideJob = viewModelScope.launch {
             delay(5000)
             state = state.copy(isAdditionalUiVisible = false)
         }
+    }
+
+    private fun cancelHideJob() {
+        hideJob?.cancel()
+        hideJob = null
     }
 }
