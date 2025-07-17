@@ -1,4 +1,4 @@
-package com.jvrcoding.notemark.ui.theme
+package com.jvrcoding.notemark.core.presentation.designsystem.theme
 
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.vector.ImageVector

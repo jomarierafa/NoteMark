@@ -1,4 +1,4 @@
-package com.jvrcoding.notemark.ui.theme
+package com.jvrcoding.notemark.core.presentation.designsystem.theme
 
 import androidx.compose.material3.Typography
 import androidx.compose.ui.text.TextStyle

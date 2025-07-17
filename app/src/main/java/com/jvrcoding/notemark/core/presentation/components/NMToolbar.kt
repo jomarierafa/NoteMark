@@ -17,9 +17,9 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.tooling.preview.Preview
 import com.jvrcoding.notemark.R
-import com.jvrcoding.notemark.ui.theme.ChevronBackIcon
-import com.jvrcoding.notemark.ui.theme.CrossIcon
-import com.jvrcoding.notemark.ui.theme.NoteMarkTheme
+import com.jvrcoding.notemark.core.presentation.designsystem.theme.ChevronBackIcon
+import com.jvrcoding.notemark.core.presentation.designsystem.theme.CrossIcon
+import com.jvrcoding.notemark.core.presentation.designsystem.theme.NoteMarkTheme
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable

@@ -18,7 +18,7 @@ import com.jvrcoding.notemark.auth.presentation.login.LoginState
 import com.jvrcoding.notemark.core.presentation.components.NMActionButton
 import com.jvrcoding.notemark.core.presentation.components.NMPasswordTextField
 import com.jvrcoding.notemark.core.presentation.components.NMTextField
-import com.jvrcoding.notemark.ui.theme.NoteMarkTheme
+import com.jvrcoding.notemark.core.presentation.designsystem.theme.NoteMarkTheme
 
 @Composable
 fun LoginFieldSection(

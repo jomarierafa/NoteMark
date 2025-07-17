@@ -23,9 +23,9 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.jvrcoding.notemark.R
 import com.jvrcoding.notemark.core.presentation.components.NMToolbar
-import com.jvrcoding.notemark.ui.theme.ExtraSmallTitle
-import com.jvrcoding.notemark.ui.theme.LogoutIcon
-import com.jvrcoding.notemark.ui.theme.NoteMarkTheme
+import com.jvrcoding.notemark.core.presentation.designsystem.theme.ExtraSmallTitle
+import com.jvrcoding.notemark.core.presentation.designsystem.theme.LogoutIcon
+import com.jvrcoding.notemark.core.presentation.designsystem.theme.NoteMarkTheme
 import org.koin.androidx.compose.koinViewModel
 
 @Composable

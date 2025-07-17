@@ -20,7 +20,8 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.jvrcoding.notemark.R
-import com.jvrcoding.notemark.ui.theme.NoteMarkTheme
+import com.jvrcoding.notemark.core.presentation.designsystem.theme.NoteMarkTheme
+import com.jvrcoding.notemark.core.presentation.designsystem.theme.fabGradient
 
 @Composable
 fun NMFloatingActionButton(
@@ -37,9 +38,7 @@ fun NMFloatingActionButton(
             modifier = modifier
                 .size(64.dp)
                 .background(
-                    brush = Brush.linearGradient(
-                        colors = listOf(Color(0xFF58A1F8), Color(0xFF5A4CF7))
-                    ),
+                    brush = MaterialTheme.colorScheme.fabGradient,
                     shape = RoundedCornerShape(20.dp)
                 ),
             contentAlignment = Alignment.Center

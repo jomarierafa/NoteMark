@@ -17,8 +17,8 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.jvrcoding.notemark.core.presentation.util.previewWithEllipsis
 import com.jvrcoding.notemark.note.presentation.notelist.model.NoteUi
-import com.jvrcoding.notemark.ui.theme.NoteMarkTheme
-import com.jvrcoding.notemark.ui.theme.Shadow
+import com.jvrcoding.notemark.core.presentation.designsystem.theme.NoteMarkTheme
+import com.jvrcoding.notemark.core.presentation.designsystem.theme.Shadow
 
 @Composable
 fun NoteListItem(

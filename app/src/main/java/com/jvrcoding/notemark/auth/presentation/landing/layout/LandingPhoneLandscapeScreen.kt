@@ -20,8 +20,8 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.jvrcoding.notemark.R
 import com.jvrcoding.notemark.auth.presentation.landing.components.LandingMenu
-import com.jvrcoding.notemark.ui.theme.NoteMarkTheme
-import com.jvrcoding.notemark.ui.theme.SoftBlue
+import com.jvrcoding.notemark.core.presentation.designsystem.theme.NoteMarkTheme
+import com.jvrcoding.notemark.core.presentation.designsystem.theme.SoftBlue
 
 @Composable
 fun LandingPhoneLandscapeScreen(

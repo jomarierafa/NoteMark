@@ -60,8 +60,8 @@ import com.jvrcoding.notemark.core.presentation.util.formatWithJustNow
 import com.jvrcoding.notemark.core.presentation.util.rememberDeviceLayoutType
 import com.jvrcoding.notemark.note.presentation.noteeditor.componets.CustomFloatingActionButton
 import com.jvrcoding.notemark.note.presentation.noteeditor.componets.DateDetails
-import com.jvrcoding.notemark.ui.theme.ExtraSmallTitle
-import com.jvrcoding.notemark.ui.theme.NoteMarkTheme
+import com.jvrcoding.notemark.core.presentation.designsystem.theme.ExtraSmallTitle
+import com.jvrcoding.notemark.core.presentation.designsystem.theme.NoteMarkTheme
 import kotlinx.coroutines.launch
 import org.koin.androidx.compose.koinViewModel
 

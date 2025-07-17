@@ -13,7 +13,7 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.jvrcoding.notemark.core.presentation.util.DeviceLayoutType
-import com.jvrcoding.notemark.ui.theme.ExtraLargeTitle
+import com.jvrcoding.notemark.core.presentation.designsystem.theme.ExtraLargeTitle
 
 data class NoteEditorLayoutConfig(
     val boxZIndex: Float,

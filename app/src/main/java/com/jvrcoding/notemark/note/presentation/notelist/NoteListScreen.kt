@@ -39,8 +39,8 @@ import com.jvrcoding.notemark.core.presentation.util.ObserveAsEvents
 import com.jvrcoding.notemark.core.presentation.util.getInitials
 import com.jvrcoding.notemark.core.presentation.util.rememberDeviceLayoutType
 import com.jvrcoding.notemark.note.presentation.notelist.components.NoteListItem
-import com.jvrcoding.notemark.ui.theme.NoteMarkTheme
-import com.jvrcoding.notemark.ui.theme.SettingIcon
+import com.jvrcoding.notemark.core.presentation.designsystem.theme.NoteMarkTheme
+import com.jvrcoding.notemark.core.presentation.designsystem.theme.SettingIcon
 import org.koin.androidx.compose.koinViewModel
 
 @Composable

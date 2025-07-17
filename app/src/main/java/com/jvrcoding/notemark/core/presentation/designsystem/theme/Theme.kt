@@ -1,4 +1,4 @@
-package com.jvrcoding.notemark.ui.theme
+package com.jvrcoding.notemark.core.presentation.designsystem.theme
 
 import android.os.Build
 import androidx.compose.foundation.isSystemInDarkTheme

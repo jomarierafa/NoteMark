@@ -21,8 +21,8 @@ import com.jvrcoding.notemark.R
 import com.jvrcoding.notemark.auth.presentation.register.RegisterState
 import com.jvrcoding.notemark.auth.presentation.register.components.RegisterFieldSection
 import com.jvrcoding.notemark.core.presentation.components.NMHeader
-import com.jvrcoding.notemark.ui.theme.ExtraLargeTitle
-import com.jvrcoding.notemark.ui.theme.NoteMarkTheme
+import com.jvrcoding.notemark.core.presentation.designsystem.theme.ExtraLargeTitle
+import com.jvrcoding.notemark.core.presentation.designsystem.theme.NoteMarkTheme
 
 @Composable
 fun RegisterTabletScreen(
