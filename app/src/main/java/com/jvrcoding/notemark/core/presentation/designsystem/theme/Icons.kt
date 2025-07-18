@@ -33,3 +33,19 @@ val LogoutIcon: ImageVector
 val ChevronBackIcon: ImageVector
     @Composable
     get() = ImageVector.vectorResource(id = R.drawable.ic_chevron_back)
+
+val ChevronRight: ImageVector
+    @Composable
+    get() = ImageVector.vectorResource(id = R.drawable.ic_chevron_right)
+
+val ClockIcon: ImageVector
+    @Composable
+    get() =ImageVector.vectorResource(id = R.drawable.ic_clock)
+
+val CheckIcon: ImageVector
+    @Composable
+    get() =ImageVector.vectorResource(id = R.drawable.ic_check)
+
+val ReloadIcon: ImageVector
+    @Composable
+    get() =ImageVector.vectorResource(id = R.drawable.ic_reload)

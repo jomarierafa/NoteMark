@@ -19,7 +19,7 @@ import androidx.compose.ui.unit.dp
 import com.jvrcoding.notemark.R
 import com.jvrcoding.notemark.auth.presentation.register.RegisterState
 import com.jvrcoding.notemark.auth.presentation.register.components.RegisterFieldSection
-import com.jvrcoding.notemark.core.presentation.components.NMHeader
+import com.jvrcoding.notemark.core.presentation.designsystem.components.NMHeader
 import com.jvrcoding.notemark.core.presentation.designsystem.theme.NoteMarkTheme
 
 @Composable

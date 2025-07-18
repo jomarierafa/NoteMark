@@ -146,7 +146,7 @@ private fun NavGraphBuilder.homeGraph(
                 onBackClick = {
                     navController.navigateUp()
                 },
-                onLogoutClick =  {
+                onSuccessfulLogout =  {
                     navController.navigate(Login) {
                         popUpTo(HomeGraph) {
                             inclusive = true

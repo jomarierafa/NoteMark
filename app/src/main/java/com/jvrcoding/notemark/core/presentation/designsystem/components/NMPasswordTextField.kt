@@ -1,4 +1,4 @@
-package com.jvrcoding.notemark.core.presentation.components
+package com.jvrcoding.notemark.core.presentation.designsystem.components
 
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.interaction.collectIsFocusedAsState
@@ -101,6 +101,7 @@ fun NMPasswordTextField(
             modifier = Modifier.fillMaxWidth(),
             textStyle = TextStyle(color = MaterialTheme.colorScheme.onSurface),
             isError = !isFocused && isError,
+            maxLines = 1,
             shape = RoundedCornerShape(12.dp),
             colors = OutlinedTextFieldDefaults.colors(
                 focusedBorderColor = MaterialTheme.colorScheme.primary,

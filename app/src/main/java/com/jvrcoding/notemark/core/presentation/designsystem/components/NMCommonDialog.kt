@@ -1,4 +1,4 @@
-package com.jvrcoding.notemark.core.presentation.components
+package com.jvrcoding.notemark.core.presentation.designsystem.components
 
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.MaterialTheme

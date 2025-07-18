@@ -1,4 +1,4 @@
-package com.jvrcoding.notemark.core.presentation.components
+package com.jvrcoding.notemark.core.presentation.designsystem.components
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.RowScope

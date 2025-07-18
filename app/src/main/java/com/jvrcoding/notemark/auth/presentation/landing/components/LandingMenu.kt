@@ -14,7 +14,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
 import com.jvrcoding.notemark.R
-import com.jvrcoding.notemark.core.presentation.components.NMActionButton
+import com.jvrcoding.notemark.core.presentation.designsystem.components.NMActionButton
 
 @Composable
 fun LandingMenu(

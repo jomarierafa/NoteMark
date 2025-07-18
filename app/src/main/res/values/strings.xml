@@ -24,6 +24,7 @@
     <string name="error_request_timeout">The request timed out.</string>
     <string name="error_too_many_requests">You\'ve hit you rate limit.</string>
     <string name="error_no_internet">Coudn\'t reach server, please check your connection.</string>
+    <string name="error_no_internet_logout">You need an internet connection to log out.</string>
     <string name="error_payload_too_large">The file you\'re trying to upload is too large.</string>
     <string name="error_server_error">Oops, something went wrong, please try again.</string>
     <string name="error_serialization">Oops, Cound\'nt parse data.</string>
@@ -50,4 +51,12 @@
     <string name="log_out">Log out</string>
     <string name="date_created">Date created</string>
     <string name="last_edited">Last edited</string>
+    <string name="clock_icon">Clock icon</string>
+    <string name="sync_interval">Sync Interval</string>
+    <string name="manual_only">Manual only</string>
+    <string name="_15_minutes">15 minutes</string>
+    <string name="_30_minutes">30 minutes</string>
+    <string name="_1_hour">1 hour</string>
+    <string name="reload_icon">Reload Icon</string>
+    <string name="sync_data">Sync Data</string>
 </resources>

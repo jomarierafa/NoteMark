@@ -20,7 +20,7 @@ import androidx.compose.ui.unit.dp
 import com.jvrcoding.notemark.R
 import com.jvrcoding.notemark.auth.presentation.login.LoginState
 import com.jvrcoding.notemark.auth.presentation.login.components.LoginFieldSection
-import com.jvrcoding.notemark.core.presentation.components.NMHeader
+import com.jvrcoding.notemark.core.presentation.designsystem.components.NMHeader
 import com.jvrcoding.notemark.core.presentation.designsystem.theme.ExtraLargeTitle
 import com.jvrcoding.notemark.core.presentation.designsystem.theme.NoteMarkTheme
 

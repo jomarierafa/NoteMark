@@ -51,8 +51,8 @@ import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.jvrcoding.notemark.R
-import com.jvrcoding.notemark.core.presentation.components.NMCommonDialog
-import com.jvrcoding.notemark.core.presentation.components.NMToolbar
+import com.jvrcoding.notemark.core.presentation.designsystem.components.NMCommonDialog
+import com.jvrcoding.notemark.core.presentation.designsystem.components.NMToolbar
 import com.jvrcoding.notemark.core.presentation.util.DeviceLayoutType
 import com.jvrcoding.notemark.core.presentation.util.ObserveAsEvents
 import com.jvrcoding.notemark.core.presentation.util.customTouch
