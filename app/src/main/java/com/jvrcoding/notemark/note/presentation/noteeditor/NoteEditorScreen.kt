@@ -144,6 +144,7 @@ fun NoteEditorScreen(
             ) {
                 NMToolbar(
                     showNavigationIcon = true,
+                    showNoInternetIcon = false,
                     title = state.screenTitle,
                     titleStyle = ExtraSmallTitle,
                     modifier = Modifier

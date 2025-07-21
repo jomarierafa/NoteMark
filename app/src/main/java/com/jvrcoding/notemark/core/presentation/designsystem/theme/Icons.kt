@@ -49,3 +49,7 @@ val CheckIcon: ImageVector
 val ReloadIcon: ImageVector
     @Composable
     get() =ImageVector.vectorResource(id = R.drawable.ic_reload)
+
+val CloudOffIcon: ImageVector
+    @Composable
+    get() =ImageVector.vectorResource(id = R.drawable.ic_cloud_off)

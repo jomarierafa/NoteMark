@@ -91,6 +91,7 @@ fun NoteListScreen(
         topBar = {
             NMToolbar(
                 showNavigationIcon = false,
+                showNoInternetIcon = state.isOffline,
                 modifier = Modifier
                     .background(MaterialTheme.colorScheme.surfaceContainerLowest)
                     .padding(layoutConfig.toolBarPadding),

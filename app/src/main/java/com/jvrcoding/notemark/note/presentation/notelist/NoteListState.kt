@@ -7,5 +7,6 @@ data class NoteListState(
     val username: String = "",
     val notes: List<NoteUi> = emptyList(),
     val isAddingNote: Boolean = false,
-    val noteToDelete: NoteId? = null
+    val noteToDelete: NoteId? = null,
+    val isOffline: Boolean = false
 )

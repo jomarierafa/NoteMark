@@ -84,6 +84,7 @@ fun SettingsScreen(
         topBar = {
             NMToolbar(
                 showNavigationIcon = true,
+                showNoInternetIcon = false,
                 titleStyle = ExtraSmallTitle,
                 modifier = Modifier
                     .background(MaterialTheme.colorScheme.surfaceContainerLowest)

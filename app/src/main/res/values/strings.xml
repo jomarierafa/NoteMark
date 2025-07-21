@@ -59,4 +59,5 @@
     <string name="_1_hour">1 hour</string>
     <string name="reload_icon">Reload Icon</string>
     <string name="sync_data">Sync Data</string>
+    <string name="no_internet_icon">No internet icon</string>
 </resources>

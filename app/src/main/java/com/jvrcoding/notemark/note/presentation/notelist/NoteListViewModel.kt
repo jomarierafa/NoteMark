@@ -1,5 +1,9 @@
 package com.jvrcoding.notemark.note.presentation.notelist
 
+import android.content.Context
+import android.net.ConnectivityManager
+import android.net.Network
+import android.net.NetworkCapabilities
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
@@ -23,7 +27,8 @@ import java.util.UUID
 
 class NoteListViewModel(
     private val noteRepository: NoteRepository,
-    private val sessionStorage: SessionStorage
+    private val sessionStorage: SessionStorage,
+    private val appContext: Context
 ): ViewModel() {
 
     var state by mutableStateOf(NoteListState())
@@ -33,6 +38,8 @@ class NoteListViewModel(
     val events = eventChannel.receiveAsFlow()
 
     init {
+        observeNetworkStatus()
+
         noteRepository.getNotes().onEach { notes ->
             val notesUi = notes.map { it.toNoteUi() }
             state = state.copy(notes = notesUi)
@@ -45,6 +52,29 @@ class NoteListViewModel(
 
             noteRepository.fetchNotes()
         }
+    }
+
+    private fun observeNetworkStatus() {
+        val connectivityManager =
+            appContext.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+
+        val network = connectivityManager.activeNetwork
+        val capabilities = connectivityManager.getNetworkCapabilities(network)
+        val isConnected = capabilities?.hasCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET) == true
+
+        state = state.copy(isOffline = !isConnected)
+
+        val callback = object : ConnectivityManager.NetworkCallback() {
+            override fun onAvailable(network: Network) {
+                state = state.copy(isOffline = false)
+            }
+
+            override fun onLost(network: Network) {
+                state = state.copy(isOffline = true)
+            }
+        }
+
+        connectivityManager.registerDefaultNetworkCallback(callback)
     }
 
     fun onAction(action: NoteListAction) {
