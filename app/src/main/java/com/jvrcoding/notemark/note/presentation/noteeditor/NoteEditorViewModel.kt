@@ -37,6 +37,7 @@ class NoteEditorViewModel(
     private var initialContentValue: String = ""
 
     private var hideJob: Job? = null
+    private var debounceJob: Job? = null
 
     private val noteId: String = savedStateHandle["id"] ?: ""
     private val isNewNote: Boolean = savedStateHandle["isNewNote"] ?: false
@@ -77,9 +78,11 @@ class NoteEditorViewModel(
             }
             is NoteEditorAction.OnTitleChanged -> {
                 state = state.copy(title = action.value)
+                performSaveNote()
             }
             is NoteEditorAction.OnContentChanged -> {
                 state = state.copy(content = action.value)
+                performSaveNote()
             }
             NoteEditorAction.OnNavIconClick -> {
                 handleNavIconClick()
@@ -147,14 +150,22 @@ class NoteEditorViewModel(
                     initialTitleValue =  state.title.text
                     initialContentValue = state.content.text
                     state = state.copy(
-                        selectedFabOption = null,
-                        isAdditionalUiVisible = true,
+//                        selectedFabOption = null,
+//                        isAdditionalUiVisible = true,
                         lastEdited = ZonedDateTime.now()
                     )
                 }
             }
 
             state = state.copy(isSavingNote = false)
+        }
+    }
+
+    private fun performSaveNote() {
+        debounceJob?.cancel()
+        debounceJob = viewModelScope.launch {
+            delay(750)
+            saveNote(state.id)
         }
     }
 

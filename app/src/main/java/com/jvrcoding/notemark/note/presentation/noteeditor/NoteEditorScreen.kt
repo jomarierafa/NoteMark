@@ -9,7 +9,6 @@ import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -160,15 +159,15 @@ fun NoteEditorScreen(
                         onAction(NoteEditorAction.OnNavIconClick)
                     },
                     actions = {
-                        if(state.screenMode == ScreenMode.EDIT) {
-                            Text(
-                                modifier = Modifier
-                                    .clickable { onAction(NoteEditorAction.OnSaveNoteClick) },
-                                text = stringResource(R.string.save_note),
-                                color = MaterialTheme.colorScheme.primary,
-                                style = ExtraSmallTitle
-                            )
-                        }
+//                        if(state.screenMode == ScreenMode.EDIT) {
+//                            Text(
+//                                modifier = Modifier
+//                                    .clickable { onAction(NoteEditorAction.OnSaveNoteClick) },
+//                                text = stringResource(R.string.save_note),
+//                                color = MaterialTheme.colorScheme.primary,
+//                                style = ExtraSmallTitle
+//                            )
+//                        }
                     }
                 )
             }
