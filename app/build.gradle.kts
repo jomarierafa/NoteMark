@@ -95,4 +95,10 @@ dependencies {
     //paging
     implementation(libs.paging.runtime)
     implementation(libs.paging.compose)
+
+    // work
+    implementation(libs.androidx.work)
+
+    //datastore
+    implementation(libs.androidx.datastore.preferences)
 }

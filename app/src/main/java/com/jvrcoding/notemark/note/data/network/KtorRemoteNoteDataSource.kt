@@ -1,4 +1,4 @@
-package com.jvrcoding.notemark.note.data
+package com.jvrcoding.notemark.note.data.network
 
 import com.jvrcoding.notemark.core.data.networking.delete
 import com.jvrcoding.notemark.core.data.networking.get

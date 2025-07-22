@@ -61,6 +61,7 @@ fun SettingsScreenRoot(
         }
     }
     SettingsScreen(
+        state = viewModel.state,
         onAction = { action ->
             when(action) {
                 SettingsAction.OnBackClick -> onBackClick()
@@ -74,6 +75,7 @@ fun SettingsScreenRoot(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SettingsScreen(
+    state: SettingsState,
     onAction: (SettingsAction) -> Unit
 ) {
     var showDropDown by remember {
@@ -129,7 +131,7 @@ fun SettingsScreen(
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     Text(
-                        text = "Manual only",
+                        text = state.syncInterval.label,
                         style = MaterialTheme.typography.bodyLarge,
                         color = MaterialTheme.colorScheme.onSurfaceVariant
                     )
@@ -145,21 +147,29 @@ fun SettingsScreen(
                         menuItems = listOf(
                             DropDownItem(
                                 title = stringResource(R.string.manual_only),
-                                isSelected = true
+                                isSelected = state.syncInterval == SyncInterval.Manual
                             ),
                             DropDownItem(
                                 title = stringResource(R.string._15_minutes),
-                                isSelected = false
+                                isSelected = state.syncInterval == SyncInterval.FifteenMinutes
                             ),
                             DropDownItem(
                                 title = stringResource(R.string._30_minutes),
-                                isSelected = false
+                                isSelected = state.syncInterval == SyncInterval.ThirtyMinutes
                             ),
                             DropDownItem(
                                 title = stringResource(R.string._1_hour),
-                                isSelected = false
+                                isSelected = state.syncInterval == SyncInterval.OneHour
                             )
-                        )
+                        ),
+                        onMenuItemClick = { index ->
+                            when(index) {
+                                0 -> onAction(SettingsAction.OnSyncIntervalChange(SyncInterval.Manual))
+                                1 -> onAction(SettingsAction.OnSyncIntervalChange(SyncInterval.FifteenMinutes))
+                                2 -> onAction(SettingsAction.OnSyncIntervalChange(SyncInterval.ThirtyMinutes))
+                                3 -> onAction(SettingsAction.OnSyncIntervalChange(SyncInterval.OneHour))
+                            }
+                        }
                     )
                 }
             }
@@ -189,7 +199,7 @@ fun SettingsScreen(
                         color = MaterialTheme.colorScheme.onSurface
                     )
                     Text(
-                        text = "Last sync: 12 min ago",
+                        text = state.lastSync,
                         style = MaterialTheme.typography.bodySmall,
                         color = MaterialTheme.colorScheme.onSurfaceVariant
                     )
@@ -230,6 +240,7 @@ fun SettingsScreen(
 private fun SettingsScreenPreview() {
     NoteMarkTheme {
         SettingsScreen(
+            state = SettingsState(),
             onAction = {}
         )
     }

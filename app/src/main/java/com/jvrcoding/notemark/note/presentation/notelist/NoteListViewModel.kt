@@ -42,7 +42,7 @@ class NoteListViewModel(
 
         noteRepository.getNotes().onEach { notes ->
             val notesUi = notes.map { it.toNoteUi() }
-            state = state.copy(notes = notesUi)
+            state = state.copy(notes = notesUi.filter { it.content.isNotEmpty() })
         }.launchIn(viewModelScope)
 
         viewModelScope.launch {

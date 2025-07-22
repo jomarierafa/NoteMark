@@ -1,4 +1,4 @@
-package com.jvrcoding.notemark.note.data
+package com.jvrcoding.notemark.note.data.network
 
 import kotlinx.serialization.Serializable
 

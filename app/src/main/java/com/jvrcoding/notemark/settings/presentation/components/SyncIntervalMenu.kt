@@ -50,7 +50,7 @@ fun SyncIntervalMenu(
                         )
                     }
                 },
-                onClick = { }
+                onClick = { onMenuItemClick(index) }
             )
         }
     }
