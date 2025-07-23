@@ -181,7 +181,7 @@ fun SettingsScreen(
 
             Row(
                 modifier = Modifier
-                    .clickable {  }
+                    .clickable { onAction(SettingsAction.OnSyncDataClick) }
                     .fillMaxWidth()
                     .wrapContentHeight()
                     .padding(vertical = 16.dp),

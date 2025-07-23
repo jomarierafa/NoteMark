@@ -10,6 +10,7 @@ import com.jvrcoding.notemark.core.common.DataStoreKeys
 import com.jvrcoding.notemark.core.domain.DataStoreRepository
 import com.jvrcoding.notemark.core.domain.SessionStorage
 import com.jvrcoding.notemark.core.domain.note.NoteRepository
+import com.jvrcoding.notemark.core.domain.note.SyncNoteScheduler
 import com.jvrcoding.notemark.core.domain.util.DataError
 import com.jvrcoding.notemark.core.domain.util.Result
 import com.jvrcoding.notemark.core.presentation.util.UiText
@@ -20,6 +21,8 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
+import java.time.ZoneId
+import java.time.ZonedDateTime
 
 class SettingsViewModel(
     private val settingsRepository: SettingsRepository,
@@ -27,6 +30,7 @@ class SettingsViewModel(
     private val applicationScope: CoroutineScope,
     private val sessionStorage: SessionStorage,
     private val dataStoreRepository: DataStoreRepository,
+    private val syncNoteScheduler: SyncNoteScheduler,
 ): ViewModel() {
 
     var state by mutableStateOf(SettingsState())
@@ -41,10 +45,17 @@ class SettingsViewModel(
             SettingsAction.OnSyncDataClick -> syncData()
             is SettingsAction.OnSyncIntervalChange -> {
                 viewModelScope.launch {
-                    state = state.copy(
-                        syncInterval = action.syncInterval
-                    )
+                    state = state.copy(syncInterval = action.syncInterval)
                     dataStoreRepository.putString(DataStoreKeys.SYNC_INTERVAL, action.syncInterval.label)
+
+                    syncNoteScheduler.cancelAllSyncs()
+                    if(action.syncInterval == SyncInterval.Manual) return@launch
+                    syncNoteScheduler.scheduleSync(
+                        type = SyncNoteScheduler.SyncType.SyncNotes(state.duration)
+                    )
+                    syncNoteScheduler.scheduleSync(
+                        type = SyncNoteScheduler.SyncType.FetchNotes(state.duration)
+                    )
                 }
             }
             else -> Unit
@@ -64,7 +75,14 @@ class SettingsViewModel(
 
     private fun syncData() {
         viewModelScope.launch {
-
+            noteRepository.syncPendingNotes()
+            noteRepository.fetchNotes()
+            val lastSync = ZonedDateTime.now()
+                .withZoneSameInstant(ZoneId.of("UTC"))
+                .toInstant()
+                .toString()
+            dataStoreRepository.putString(DataStoreKeys.LAST_SYNC, lastSync)
+            state = state.copy(lastSync = "Last sync: ${lastSync.toSyncStatusMessage()}")
         }
     }
 
