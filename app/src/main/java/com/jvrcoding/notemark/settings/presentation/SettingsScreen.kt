@@ -1,6 +1,12 @@
 package com.jvrcoding.notemark.settings.presentation
 
 import android.widget.Toast
+import androidx.compose.animation.core.LinearEasing
+import androidx.compose.animation.core.RepeatMode
+import androidx.compose.animation.core.animateFloat
+import androidx.compose.animation.core.infiniteRepeatable
+import androidx.compose.animation.core.rememberInfiniteTransition
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
@@ -24,6 +30,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
@@ -186,10 +193,25 @@ fun SettingsScreen(
                     .wrapContentHeight()
                     .padding(vertical = 16.dp),
             ) {
+                val infiniteTransition = rememberInfiniteTransition(label = "rotation")
+                val rotation = if (state.isSyncing) {
+                    infiniteTransition.animateFloat(
+                        initialValue = 0f,
+                        targetValue = 360f,
+                        animationSpec = infiniteRepeatable(
+                            animation = tween(durationMillis = 1000, easing = LinearEasing),
+                            repeatMode = RepeatMode.Restart
+                        ),
+                        label = "infiniteRotation"
+                    ).value
+                } else {
+                    0f
+                }
                 Icon(
                     imageVector = ReloadIcon,
                     contentDescription = stringResource(R.string.reload_icon),
-                    tint = MaterialTheme.colorScheme.onSurfaceVariant
+                    tint = MaterialTheme.colorScheme.onSurfaceVariant,
+                    modifier = Modifier.rotate(rotation)
                 )
                 Spacer(modifier = Modifier.width(12.dp))
                 Column {

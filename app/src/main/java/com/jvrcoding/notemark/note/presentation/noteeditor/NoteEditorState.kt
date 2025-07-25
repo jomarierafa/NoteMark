@@ -12,7 +12,6 @@ data class NoteEditorState(
     val dateCreated: ZonedDateTime = ZonedDateTime.now(),
     val lastEdited: ZonedDateTime = ZonedDateTime.now(),
     val isSavingNote: Boolean = false,
-    val showDiscardDialog: Boolean = false,
     val selectedFabOption: FabOption? = null,
     val isAdditionalUiVisible: Boolean = true
 ) {

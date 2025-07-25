@@ -11,8 +11,6 @@ sealed interface NoteEditorAction {
     data class OnTitleChanged(val value: TextFieldValue): NoteEditorAction
     data class OnContentChanged(val value: TextFieldValue): NoteEditorAction
     data object OnNavIconClick: NoteEditorAction
-    data object OnKeepEditingClick: NoteEditorAction
-    data object OnDiscardClick: NoteEditorAction
     data object OnSurfaceTap: NoteEditorAction
     data object OnStartScrolling: NoteEditorAction
 }

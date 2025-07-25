@@ -33,9 +33,6 @@ class NoteEditorViewModel(
     private val eventChannel = Channel<NoteEditorEvent>()
     val events = eventChannel.receiveAsFlow()
 
-    private var initialTitleValue: String = ""
-    private var initialContentValue: String = ""
-
     private var hideJob: Job? = null
     private var debounceJob: Job? = null
 
@@ -87,16 +84,6 @@ class NoteEditorViewModel(
             NoteEditorAction.OnNavIconClick -> {
                 handleNavIconClick()
             }
-            NoteEditorAction.OnDiscardClick -> {
-                state = state.copy(
-                    showDiscardDialog = false,
-                    selectedFabOption = null,
-                    isAdditionalUiVisible = true
-                )
-            }
-            NoteEditorAction.OnKeepEditingClick -> {
-                state = state.copy(showDiscardDialog = false)
-            }
             NoteEditorAction.OnSurfaceTap -> {
                 if(state.screenMode == ScreenMode.READ) {
                     state = state.copy(isAdditionalUiVisible = !state.isAdditionalUiVisible)
@@ -124,8 +111,6 @@ class NoteEditorViewModel(
                     lastEdited = note.lastEditedAt,
                     content = TextFieldValue(text = note.content)
                 )
-                initialTitleValue = note.title
-                initialContentValue = note.content
             }
         }
     }
@@ -147,8 +132,6 @@ class NoteEditorViewModel(
                     eventChannel.send(NoteEditorEvent.Error(result.error.asUiText()))
                 }
                 is Result.Success -> {
-                    initialTitleValue =  state.title.text
-                    initialContentValue = state.content.text
                     state = state.copy(
 //                        selectedFabOption = null,
 //                        isAdditionalUiVisible = true,
@@ -171,21 +154,14 @@ class NoteEditorViewModel(
 
     private fun handleNavIconClick() {
         if(state.screenMode == ScreenMode.EDIT) {
-            state = if(initialTitleValue == state.title.text &&
-                initialContentValue == state.content.text
-            ) {
-                state.copy(
-                    selectedFabOption = null,
-                    isAdditionalUiVisible = true
-                )
-            } else {
-                state.copy(showDiscardDialog = true)
-            }
+            state = state.copy(
+                selectedFabOption = null,
+                isAdditionalUiVisible = true
+            )
             return
         }
 
         viewModelScope.launch {
-            // TODO(reusing DiscardChanges for exiting the note detail screen XD)
             eventChannel.send(NoteEditorEvent.ExitScreen)
         }
     }

@@ -135,7 +135,7 @@ private fun NavGraphBuilder.homeGraph(
                 onSuccessfulSave = {
                     navController.navigateUp()
                 },
-                onDiscardChanges = {
+                onBackClick = {
                     navController.navigateUp()
                 }
             )

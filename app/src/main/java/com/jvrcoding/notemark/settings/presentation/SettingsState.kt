@@ -7,7 +7,8 @@ import kotlin.time.Duration.Companion.hours
 
 data class SettingsState(
     val syncInterval: SyncInterval = SyncInterval.Manual,
-    val lastSync: String = ""
+    val lastSync: String = "",
+    val isSyncing: Boolean = false
 ) {
     val duration: Duration
         get() = when (syncInterval) {

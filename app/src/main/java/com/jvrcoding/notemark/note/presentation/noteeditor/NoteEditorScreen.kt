@@ -50,7 +50,6 @@ import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.jvrcoding.notemark.R
-import com.jvrcoding.notemark.core.presentation.designsystem.components.NMCommonDialog
 import com.jvrcoding.notemark.core.presentation.designsystem.components.NMToolbar
 import com.jvrcoding.notemark.core.presentation.util.DeviceLayoutType
 import com.jvrcoding.notemark.core.presentation.util.ObserveAsEvents
@@ -68,7 +67,7 @@ import org.koin.androidx.compose.koinViewModel
 fun NoteEditorScreenRoot(
     onSuccessfulDelete: () -> Unit,
     onSuccessfulSave: () -> Unit,
-    onDiscardChanges: () -> Unit,
+    onBackClick: () -> Unit,
     viewModel: NoteEditorViewModel = koinViewModel()
 ) {
 
@@ -87,7 +86,7 @@ fun NoteEditorScreenRoot(
             NoteEditorEvent.ExitScreen -> {
                 val activity = context as? Activity
                 activity?.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED
-                onDiscardChanges()
+                onBackClick()
             }
         }
     }
@@ -318,21 +317,6 @@ fun NoteEditorScreen(
                     }
                 )
             }
-        }
-
-        if(state.showDiscardDialog) {
-            NMCommonDialog(
-                title = stringResource(R.string.discard_changes),
-                text = stringResource(R.string.discard_dialog_message),
-                positiveButtonText = stringResource(R.string.discard),
-                negativeButtonText = stringResource(R.string.keep_editing),
-                onDismiss = {
-                    onAction(NoteEditorAction.OnKeepEditingClick)
-                },
-                onConfirm = {
-                    onAction(NoteEditorAction.OnDiscardClick)
-                }
-            )
         }
     }
 }

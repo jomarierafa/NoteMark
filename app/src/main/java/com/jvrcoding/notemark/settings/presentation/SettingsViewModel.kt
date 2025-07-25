@@ -74,7 +74,11 @@ class SettingsViewModel(
     }
 
     private fun syncData() {
+        if(state.isSyncing) return
         viewModelScope.launch {
+            state = state.copy(
+                isSyncing = true
+            )
             noteRepository.syncPendingNotes()
             noteRepository.fetchNotes()
             val lastSync = ZonedDateTime.now()
@@ -82,7 +86,10 @@ class SettingsViewModel(
                 .toInstant()
                 .toString()
             dataStoreRepository.putString(DataStoreKeys.LAST_SYNC, lastSync)
-            state = state.copy(lastSync = "Last sync: ${lastSync.toSyncStatusMessage()}")
+            state = state.copy(
+                isSyncing = false,
+                lastSync = "Last sync: ${lastSync.toSyncStatusMessage()}"
+            )
         }
     }
 
