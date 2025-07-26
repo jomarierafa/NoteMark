@@ -33,4 +33,8 @@ class DataStoreRepoImpl(
             null
         }
     }
+
+    override suspend fun clearAll() {
+        context.dataStore.edit { it.clear() }
+    }
 }

@@ -36,6 +36,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.jvrcoding.notemark.R
+import com.jvrcoding.notemark.core.presentation.designsystem.components.NMCommonDialog
 import com.jvrcoding.notemark.core.presentation.designsystem.components.NMToolbar
 import com.jvrcoding.notemark.core.presentation.designsystem.theme.ChevronRight
 import com.jvrcoding.notemark.core.presentation.designsystem.theme.ClockIcon
@@ -254,6 +255,17 @@ fun SettingsScreen(
                 )
             }
         }
+    }
+
+    if(state.showSyncDialog) {
+        NMCommonDialog(
+            title = stringResource(R.string.dialog_unsync_title),
+            text = stringResource(R.string.dialog_unsync_message),
+            positiveButtonText = stringResource(R.string.sync_now),
+            negativeButtonText = stringResource(R.string.log_out_without_syncing),
+            onDismiss = { onAction(SettingsAction.OnDialogLogoutWithoutSyncingClick) },
+            onConfirm = { onAction(SettingsAction.OnDialogSyncNowClick) }
+        )
     }
 }
 

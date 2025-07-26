@@ -60,4 +60,8 @@
     <string name="reload_icon">Reload Icon</string>
     <string name="sync_data">Sync Data</string>
     <string name="no_internet_icon">No internet icon</string>
+    <string name="dialog_unsync_title">You have unsynced changes.</string>
+    <string name="dialog_unsync_message">What would you like to do before logging out?</string>
+    <string name="sync_now">Sync now</string>
+    <string name="log_out_without_syncing">Log out without syncing</string>
 </resources>

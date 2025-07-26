@@ -9,6 +9,9 @@ import com.jvrcoding.notemark.core.data.database.entity.SyncOperationType
 @Dao
 interface NotePendingSyncDao {
 
+    @Query("SELECT COUNT(*) FROM notependingsyncentity WHERE username=:username")
+    suspend fun getPendingNoteCount(username: String,): Int
+
     @Query("SELECT * FROM notependingsyncentity WHERE username=:username AND operationType=:operationType")
     suspend fun getAllNotePendingSyncEntities(
         username: String,

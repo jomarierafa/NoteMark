@@ -43,6 +43,14 @@ class SettingsViewModel(
         when(action) {
             SettingsAction.OnLogoutClick -> logout()
             SettingsAction.OnSyncDataClick -> syncData()
+            SettingsAction.OnDialogSyncNowClick -> {
+                state = state.copy(showSyncDialog = false)
+                syncData(shallLogout = true)
+            }
+            SettingsAction.OnDialogLogoutWithoutSyncingClick -> {
+                state = state.copy(showSyncDialog = false)
+                logout(logoutImmediately = true)
+            }
             is SettingsAction.OnSyncIntervalChange -> {
                 viewModelScope.launch {
                     state = state.copy(syncInterval = action.syncInterval)
@@ -73,7 +81,7 @@ class SettingsViewModel(
         }
     }
 
-    private fun syncData() {
+    private fun syncData(shallLogout: Boolean = false) {
         if(state.isSyncing) return
         viewModelScope.launch {
             state = state.copy(
@@ -81,6 +89,12 @@ class SettingsViewModel(
             )
             noteRepository.syncPendingNotes()
             noteRepository.fetchNotes()
+
+            if(shallLogout) {
+                logout(true)
+                return@launch
+            }
+
             val lastSync = ZonedDateTime.now()
                 .withZoneSameInstant(ZoneId.of("UTC"))
                 .toInstant()
@@ -93,8 +107,13 @@ class SettingsViewModel(
         }
     }
 
-    private fun logout() {
+    private fun logout(logoutImmediately: Boolean = false) {
         viewModelScope.launch {
+            if(!logoutImmediately && noteRepository.getPendingNoteCount() > 0) {
+                state = state.copy(showSyncDialog = true)
+                return@launch
+            }
+
             when (val result = settingsRepository.logout()) {
                 is Result.Error -> {
                     if(result.error == DataError.Network.NO_INTERNET) {
@@ -107,6 +126,7 @@ class SettingsViewModel(
                 }
                 is Result.Success -> {
                     applicationScope.launch {
+                        dataStoreRepository.clearAll()
                         noteRepository.deleteAllNotes()
                         sessionStorage.set(null)
                     }

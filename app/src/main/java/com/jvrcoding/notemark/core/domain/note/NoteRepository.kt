@@ -13,5 +13,6 @@ interface NoteRepository {
     suspend fun updateNote(note: Note): EmptyResult<DataError>
     suspend fun deleteNote(id: NoteId)
     suspend fun deleteAllNotes()
+    suspend fun getPendingNoteCount(): Int
     suspend fun syncPendingNotes()
 }

@@ -141,6 +141,11 @@ class NoteRepositoryImpl(
         localNoteDataSource.deleteAllNotes()
     }
 
+    override suspend fun getPendingNoteCount(): Int {
+        val username = sessionStorage.get()?.username ?: return 0
+        return notePendingSyncDao.getPendingNoteCount(username)
+    }
+
     override suspend fun syncPendingNotes() {
         withContext(Dispatchers.IO) {
             val username = sessionStorage.get()?.username ?: return@withContext
