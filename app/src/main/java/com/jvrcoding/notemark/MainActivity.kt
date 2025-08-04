@@ -29,7 +29,7 @@ class MainActivity : ComponentActivity() {
             navigationBarStyle = SystemBarStyle.light(Color.TRANSPARENT, Color.TRANSPARENT)
         )
         setContent {
-            NoteMarkTheme(dynamicColor = false) {
+            NoteMarkTheme {
                 if(!viewModel.state.isCheckingAuth) {
                     val navController = rememberNavController()
                     NavigationRoot(
