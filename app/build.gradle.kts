@@ -16,8 +16,8 @@ android {
         applicationId = "com.jvrcoding.notemark"
         minSdk = 24
         targetSdk = 35
-        versionCode = 2
-        versionName = "1.0"
+        versionCode = 3
+        versionName = "1.1"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -27,13 +27,18 @@ android {
         debug {
             buildConfigField("String", "USER_EMAIL", "\"$userEmail\"")
             buildConfigField("String", "BASE_URL", "\"https://notemark.pl-coding.com\"")
+            isMinifyEnabled = false
+            proguardFiles(
+                getDefaultProguardFile("proguard-android-optimize.txt"),
+                "proguard-rules.pro"
+            )
         }
 
         release {
             buildConfigField("String", "USER_EMAIL", "\"$userEmail\"")
             buildConfigField("String", "BASE_URL", "\"https://notemark.pl-coding.com\"")
 
-            isMinifyEnabled = false
+            isMinifyEnabled = true
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
