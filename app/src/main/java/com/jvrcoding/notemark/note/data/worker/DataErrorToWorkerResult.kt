@@ -8,6 +8,7 @@ fun DataError.toWorkerResult(): Result {
         DataError.Local.DISK_FULL -> Result.failure()
         DataError.Network.REQUEST_TIMEOUT -> Result.retry()
         DataError.Network.UNAUTHORIZED -> Result.retry()
+        DataError.Network.NOT_FOUND -> Result.failure()
         DataError.Network.CONFLICT -> Result.retry()
         DataError.Network.TOO_MANY_REQUEST -> Result.retry()
         DataError.Network.NO_INTERNET -> Result.retry()

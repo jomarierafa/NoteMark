@@ -16,6 +16,7 @@ import com.jvrcoding.notemark.core.domain.util.Result
 import com.jvrcoding.notemark.core.presentation.util.asUiText
 import com.jvrcoding.notemark.note.presentation.notelist.notemapper.toNoteUi
 import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.receiveAsFlow
@@ -40,10 +41,15 @@ class NoteListViewModel(
     init {
         observeNetworkStatus()
 
-        noteRepository.getNotes().onEach { notes ->
-            val notesUi = notes.map { it.toNoteUi() }
-            state = state.copy(notes = notesUi)
-        }.launchIn(viewModelScope)
+        noteRepository.getNotes()
+            .debounce {
+                if(state.isAddingNote) 1000 else 0
+            }
+            .onEach { notes ->
+                val notesUi = notes.map { it.toNoteUi() }
+                state = state.copy(notes = notesUi)
+            }
+            .launchIn(viewModelScope)
 
         viewModelScope.launch {
             sessionStorage.get()?.let {
@@ -106,6 +112,7 @@ class NoteListViewModel(
             val noteId = UUID.randomUUID().toString()
 
             state = state.copy(isAddingNote = true)
+            eventChannel.send(NoteListEvent.NoteSaved(noteId))
             val note = Note(
                 id = noteId,
                 title = "New Note",
@@ -121,7 +128,7 @@ class NoteListViewModel(
                     eventChannel.send(NoteListEvent.Error(result.error.asUiText()))
                 }
                 is Result.Success -> {
-                    eventChannel.send(NoteListEvent.NoteSaved(noteId))
+//                    eventChannel.send(NoteListEvent.NoteSaved(noteId))
                 }
             }
 

@@ -10,6 +10,7 @@ import com.jvrcoding.notemark.core.data.database.mappers.toNote
 import com.jvrcoding.notemark.core.domain.DataStoreRepository
 import com.jvrcoding.notemark.core.domain.SessionStorage
 import com.jvrcoding.notemark.core.domain.note.RemoteNoteDataSource
+import com.jvrcoding.notemark.core.domain.util.DataError
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.coroutineScope
@@ -57,8 +58,15 @@ class SyncNoteWorker(
                     launch {
                         val note = entity.note.toNote()
                         val result = noteRunDataSource.putNote(note)
-                        if (result is com.jvrcoding.notemark.core.domain.util.Result.Success) {
-                            notePendingSyncDao.deleteNotePendingSyncEntity(entity.noteId)
+                        when(result) {
+                            is com.jvrcoding.notemark.core.domain.util.Result.Error<*> -> {
+                                if(result.error == DataError.Network.NOT_FOUND) {
+                                    notePendingSyncDao.deleteNotePendingSyncEntity(entity.noteId)
+                                }
+                            }
+                            is com.jvrcoding.notemark.core.domain.util.Result.Success<*> -> {
+                                notePendingSyncDao.deleteNotePendingSyncEntity(entity.noteId)
+                            }
                         }
                     }
                 }

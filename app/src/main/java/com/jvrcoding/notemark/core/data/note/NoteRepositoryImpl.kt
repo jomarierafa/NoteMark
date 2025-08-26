@@ -110,12 +110,9 @@ class NoteRepositoryImpl(
             return
         }
 
-        val remoteResult = applicationScope.async {
-            remoteNoteDataSource.deleteNote(id)
-        }.await()
-
-        if(remoteResult is Result.Error) {
-            applicationScope.async {
+        applicationScope.async {
+            val remoteResult =  remoteNoteDataSource.deleteNote(id)
+            if(remoteResult is Result.Error) {
                 val now = ZonedDateTime.now()
                     .withZoneSameInstant(ZoneId.of("UTC"))
                 notePendingSyncDao.upsertNotePendingSyncEntity(
@@ -131,8 +128,11 @@ class NoteRepositoryImpl(
                         operationType = SyncOperationType.DELETE
                     )
                 )
-            }.join()
-        }
+                return@async
+            }
+            notePendingSyncDao.deleteNotePendingSyncEntity(id)
+        }.join()
+
     }
 
 
@@ -181,8 +181,14 @@ class NoteRepositoryImpl(
                 .map {
                     launch {
                         val note = it.note.toNote()
-                        when(remoteNoteDataSource.putNote(note)) {
-                            is Result.Error -> Unit
+                        when(val result = remoteNoteDataSource.putNote(note)) {
+                            is Result.Error -> {
+                                if(result.error == DataError.Network.NOT_FOUND) {
+                                    applicationScope.launch {
+                                        notePendingSyncDao.deleteNotePendingSyncEntity(it.noteId)
+                                    }.join()
+                                }
+                            }
                             is Result.Success -> {
                                 applicationScope.launch {
                                     notePendingSyncDao.deleteNotePendingSyncEntity(it.noteId)
